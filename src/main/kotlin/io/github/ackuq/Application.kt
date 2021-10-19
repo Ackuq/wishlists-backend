@@ -1,15 +1,29 @@
 package io.github.ackuq
 
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
-import io.github.ackuq.plugins.*
+import io.github.ackuq.conf.DatabaseFactory
+import io.github.ackuq.conf.configureCORS
+import io.github.ackuq.conf.configureJWT
+import io.github.ackuq.routes.authenticationRoutes
+import io.ktor.application.*
+import io.ktor.features.*
+import io.ktor.routing.*
+import io.ktor.serialization.*
 
-fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
-        configureRouting()
-        configureSockets()
-        configureSerialization()
-        configureHTTP()
-        configureSecurity()
-    }.start(wait = true)
+fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+
+fun Application.module() {
+    install(ContentNegotiation) {
+        json()
+    }
+
+    configureCORS()
+    configureJWT()
+
+    DatabaseFactory.init()
+
+    routing {
+        authenticationRoutes()
+    }
 }
+
+
