@@ -1,5 +1,5 @@
-CREATE TABLE Users (
+CREATE TABLE users (
     uuid UUID primary key,
     email varchar(100) unique,
-    password varchar(100)
+    password_hash varchar(60)
 )

@@ -3,6 +3,7 @@ package io.github.ackuq
 import io.github.ackuq.conf.DatabaseFactory
 import io.github.ackuq.conf.configureCORS
 import io.github.ackuq.conf.configureJWT
+import io.github.ackuq.conf.configureStatusPages
 import io.github.ackuq.routes.authenticationRoutes
 import io.ktor.application.*
 import io.ktor.features.*
@@ -18,6 +19,7 @@ fun Application.module() {
 
     configureCORS()
     configureJWT()
+    configureStatusPages()
 
     DatabaseFactory.init()
 

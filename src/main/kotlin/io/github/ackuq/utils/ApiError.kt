@@ -1,4 +1,4 @@
-package io.github.ackuq.models
+package io.github.ackuq.utils
 
 import kotlinx.serialization.Serializable
 

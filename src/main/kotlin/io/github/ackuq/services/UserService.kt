@@ -14,7 +14,7 @@ object UserService {
     suspend fun createUser(newUser: UserPayload): UUID = dbQuery {
         Users.insert {
             it[email] = newUser.email
-            it[password] = newUser.password
+            it[passwordHash] = newUser.password
         } get Users.uuid
     }
 
@@ -39,6 +39,6 @@ object UserService {
         User(
             uuid = row[Users.uuid].toString(),
             email = row[Users.email],
-            password = row[Users.password]
+            passwordHash = row[Users.passwordHash]
         )
 }

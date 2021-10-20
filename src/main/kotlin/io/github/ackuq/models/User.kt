@@ -8,11 +8,11 @@ import java.util.*
 object Users: Table() {
     val uuid: Column<UUID> = uuid("uuid").autoGenerate().primaryKey()
     val email: Column<String> = varchar("email", 100).uniqueIndex()
-    val password: Column<String> = varchar("password", 100)
+    val passwordHash: Column<String> = varchar("password_hash", 60)
 }
 
 @Serializable
-data class User(val uuid: String, val email: String, val password: String)
+data class User(val uuid: String, val email: String, val passwordHash: String)
 
 @Serializable
 data class UserPayload(val email: String, val password: String)

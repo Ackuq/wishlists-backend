@@ -1,6 +1,10 @@
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
+val postgresql_version: String by project
+val hikariCP_version: String by project
+val exposed_version: String by project
+val flyway_version: String by project
 
 plugins {
     application
@@ -28,21 +32,21 @@ dependencies {
     implementation("io.ktor:ktor-websockets:$ktor_version")
     // JSON serializations
     implementation("io.ktor:ktor-serialization:$ktor_version")
-    // Session handling
-    implementation("io.ktor:ktor-server-sessions:$ktor_version")
     // Authentication
     implementation("io.ktor:ktor-auth:$ktor_version")
     implementation("io.ktor:ktor-auth-jwt:$ktor_version")
+    // BCrypt
+    implementation("org.mindrot:jbcrypt:0.4")
     // Logging
     implementation("ch.qos.logback:logback-classic:$logback_version")
     // Postgres connector
-    implementation("org.postgresql:postgresql:42.3.0")
+    implementation("org.postgresql:postgresql:$postgresql_version")
     // HikariCP JDBC connection pool
-    implementation("com.zaxxer:HikariCP:5.0.0")
+    implementation("com.zaxxer:HikariCP:$hikariCP_version")
     // Exposed as SQL framework
-    implementation("org.jetbrains.exposed:exposed:0.17.14")
+    implementation("org.jetbrains.exposed:exposed:$exposed_version")
     // Flyway for DB migrations
-    implementation("org.flywaydb:flyway-core:5.0.3")
+    implementation("org.flywaydb:flyway-core:$flyway_version")
     // Test dependencies
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlin_version")

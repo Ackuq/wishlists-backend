@@ -18,8 +18,7 @@ object DatabaseFactory {
 
     fun init() {
         Database.connect(hikari())
-        val flyway = Flyway()
-        flyway.setDataSource(dbURL, dbUser, dbPassword)
+        val flyway = Flyway.configure().dataSource(dbURL, dbUser, dbPassword).load()
         flyway.migrate()
     }
 
