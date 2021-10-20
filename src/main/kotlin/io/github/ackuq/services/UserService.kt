@@ -1,6 +1,7 @@
 package io.github.ackuq.services
 
 import io.github.ackuq.conf.DatabaseFactory.dbQuery
+import io.github.ackuq.models.Role
 import io.github.ackuq.models.User
 import io.github.ackuq.models.UserPayload
 import io.github.ackuq.models.Users
@@ -15,6 +16,7 @@ object UserService {
         Users.insert {
             it[email] = newUser.email
             it[passwordHash] = newUser.password
+            it[role] = Role.Customer
         } get Users.uuid
     }
 
@@ -39,6 +41,7 @@ object UserService {
         User(
             uuid = row[Users.uuid].toString(),
             email = row[Users.email],
-            passwordHash = row[Users.passwordHash]
+            passwordHash = row[Users.passwordHash],
+            role = row[Users.role]
         )
 }
