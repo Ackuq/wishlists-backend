@@ -61,6 +61,10 @@ tasks {
     compileTestKotlin {
         kotlinOptions { jvmTarget = javaVersion }
     }
+
+    create("stage") {
+        dependsOn("installDist")
+    }
 }
 
 flyway {
