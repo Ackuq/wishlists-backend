@@ -1,5 +1,6 @@
 package io.github.ackuq.models
 
+import io.ktor.auth.*
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
@@ -13,7 +14,7 @@ object Users: Table() {
 }
 
 @Serializable
-data class User(val uuid: String, val email: String, val passwordHash: String, val role: Role)
+data class User(val uuid: String, val email: String, val passwordHash: String, val role: Role) : Principal
 
 @Serializable
 data class UserPayload(val email: String, val password: String)

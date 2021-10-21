@@ -1,22 +1,26 @@
 package io.github.ackuq.conf
 
 import io.github.ackuq.models.Role
+import io.github.ackuq.services.UserService
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.auth.jwt.*
+import java.util.*
 
-fun handleAuthentication(uuid: String, roleOrdinal: Int?, roles: List<Int>?): Principal? {
+suspend fun handleAuthentication(uuid: String, roles: List<Role>?): Principal? {
     if (uuid == "") {
         return null
     }
 
+    val user = UserService.getUserByUUID(UUID.fromString(uuid)) ?: return null
+
     if (roles != null) {
-        if (roleOrdinal == null || roleOrdinal !in roles) {
+        if (user.role !in roles) {
             return null
         }
     }
 
-    return UserIdPrincipal(uuid)
+    return user
 }
 
 fun Application.configureJWT() {
@@ -25,15 +29,14 @@ fun Application.configureJWT() {
             verifier(JwtConfig.verifier)
             validate {
                 val uuid = it.payload.getClaim("uuid").asString()
-                handleAuthentication(uuid, null, null)
+                handleAuthentication(uuid, null)
             }
         }
         jwt("admin") {
             verifier(JwtConfig.verifier)
             validate {
                 val uuid = it.payload.getClaim("uuid").asString()
-                val roleOrdinal = it.payload.getClaim("role").asInt()
-                handleAuthentication(uuid, roleOrdinal, listOf(Role.Admin.ordinal))
+                handleAuthentication(uuid, listOf(Role.Admin))
             }
         }
     }

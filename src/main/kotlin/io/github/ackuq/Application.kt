@@ -5,6 +5,7 @@ import io.github.ackuq.conf.configureCORS
 import io.github.ackuq.conf.configureJWT
 import io.github.ackuq.conf.configureStatusPages
 import io.github.ackuq.routes.authenticationRoutes
+import io.github.ackuq.routes.usersRoutes
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.routing.*
@@ -25,6 +26,7 @@ fun Application.module() {
 
     routing {
         authenticationRoutes()
+        usersRoutes()
     }
 }
 
