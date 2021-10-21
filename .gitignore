@@ -29,3 +29,6 @@ captures/
 .classpath
 .project
 .settings
+
+# Postgres data
+.tmp
