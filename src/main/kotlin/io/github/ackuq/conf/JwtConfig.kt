@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
 import com.typesafe.config.ConfigFactory
-import io.github.ackuq.models.Role
+import io.github.ackuq.models.User
 import io.ktor.config.*
 import java.util.*
 
@@ -20,11 +20,10 @@ object JwtConfig {
 
     private fun getExpiration() = Date(System.currentTimeMillis() + validityInMs)
 
-    fun generateToken(uuid: String, role: Role): String =
+    fun generateToken(user: User): String =
         JWT.create()
             .withIssuer(issuer)
-            .withClaim("uuid", uuid)
-            .withClaim("role", role.ordinal)
+            .withClaim("uuid", user.uuid)
             .withExpiresAt(getExpiration())
             .sign(algorithm)
 

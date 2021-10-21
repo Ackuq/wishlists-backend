@@ -1,37 +1,41 @@
 package io.github.ackuq.routes
 
-import io.github.ackuq.conf.AuthorizationException
 import io.github.ackuq.controllers.UserController
 import io.github.ackuq.models.UserPayload
-import io.github.ackuq.services.UserService
 import io.github.ackuq.utils.handleApiSuccess
 import io.ktor.application.*
-import io.ktor.auth.*
-import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.routing.*
-import java.util.*
+
+fun Route.login() {
+    route("/login") {
+        post {
+            val userPayload = call.receive<UserPayload>()
+            val token = UserController.login(userPayload)
+            application.log.debug("User ${userPayload.email} logged in")
+            handleApiSuccess(token, HttpStatusCode.OK, call)
+        }
+    }
+}
+
+fun Route.register() {
+    route("/register") {
+        post {
+            val userPayload = call.receive<UserPayload>()
+            application.log.debug("Received register request from ${userPayload.email}")
+            val token = UserController.register(userPayload)
+            application.log.debug("Successfully registered user ${userPayload.email}")
+            handleApiSuccess(token, HttpStatusCode.Created, call)
+        }
+    }
+}
 
 fun Application.authenticationRoutes() {
-
-
     routing {
-        route("/auth") {
-            route("/login/") {
-                post {
-                    val userPayload = call.receive<UserPayload>()
-                    val token = UserController.login(userPayload)
-                    handleApiSuccess(token, HttpStatusCode.OK, call)
-                }
-            }
-            route("/register/") {
-                post {
-                    val newUser = call.receive<UserPayload>()
-                    val token = UserController.register(newUser)
-                    handleApiSuccess(token, HttpStatusCode.Created, call)
-                }
-            }
+        route("api/v1/auth") {
+            login()
+            register()
         }
     }
 }

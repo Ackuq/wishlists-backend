@@ -5,8 +5,8 @@ import io.github.ackuq.models.User
 import io.github.ackuq.models.UserPayload
 import io.github.ackuq.services.UserService
 import io.ktor.features.*
-import java.util.*
 import org.mindrot.jbcrypt.BCrypt
+import java.util.*
 
 object UserController {
 
@@ -18,7 +18,7 @@ object UserController {
         val hashedPassword = BCrypt.hashpw(payload.password, BCrypt.gensalt())
         val databasePayload = UserPayload(payload.email, hashedPassword)
         val user = UserService.createUser(databasePayload)
-        return JwtConfig.generateToken(user.uuid, user.role)
+        return JwtConfig.generateToken(user)
     }
 
     suspend fun login(payload: UserPayload): String {
@@ -31,7 +31,7 @@ object UserController {
                 throw BadRequestException("Passwords does not match")
             }
             else -> {
-                return JwtConfig.generateToken(user.uuid, user.role)
+                return JwtConfig.generateToken(user)
             }
         }
 

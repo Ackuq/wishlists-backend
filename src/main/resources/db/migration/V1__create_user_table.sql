@@ -1,5 +1,5 @@
 CREATE TABLE users (
-    uuid UUID primary key,
-    email varchar(100) unique,
-    password_hash varchar(60)
+    uuid UUID PRIMARY KEY,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(60) NOT NULL
 )

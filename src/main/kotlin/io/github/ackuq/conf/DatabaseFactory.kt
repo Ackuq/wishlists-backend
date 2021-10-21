@@ -10,13 +10,18 @@ import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
 
-object DatabaseFactory {
+interface IDatabaseFactory {
+    fun init()
+}
+
+
+object DatabaseFactory : IDatabaseFactory {
     private val appConfig = HoconApplicationConfig(ConfigFactory.load())
     private val dbURL = appConfig.property("db.jdbcURL").getString()
     private val dbUser = appConfig.property("db.dbUser").getString()
     private val dbPassword = appConfig.property("db.dbPassword").getString()
 
-    fun init() {
+    override fun init() {
         Database.connect(hikari())
         val flyway = Flyway.configure().dataSource(dbURL, dbUser, dbPassword).load()
         flyway.migrate()

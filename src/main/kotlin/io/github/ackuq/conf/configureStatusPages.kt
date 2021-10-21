@@ -2,12 +2,10 @@ package io.github.ackuq.conf
 
 import io.github.ackuq.utils.handleApiError
 import io.github.ackuq.utils.handleApiException
-import io.github.ackuq.utils.handleApiSuccess
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
 import kotlinx.serialization.SerializationException
-import java.nio.file.ClosedFileSystemException
 
 fun Application.configureStatusPages() {
     install(StatusPages) {

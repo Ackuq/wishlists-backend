@@ -52,14 +52,15 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlin_version")
 }
 
-tasks {
-    val javaVersion = "11"
-
-    compileKotlin {
-        kotlinOptions { jvmTarget = javaVersion }
+kotlin {
+    jvmToolchain {
+        (this as JavaToolchainSpec).languageVersion.set(JavaLanguageVersion.of("11"))
     }
-    compileTestKotlin {
-        kotlinOptions { jvmTarget = javaVersion }
+}
+
+tasks {
+    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+        kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
     }
 
     create("stage") {
