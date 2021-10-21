@@ -1,18 +1,12 @@
 package io.github.ackuq.services
 
 import io.github.ackuq.conf.DatabaseFactory.dbQuery
-import io.github.ackuq.models.Role
-import io.github.ackuq.models.User
-import io.github.ackuq.models.UserPayload
-import io.github.ackuq.models.Users
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
+import io.github.ackuq.models.*
+import org.jetbrains.exposed.sql.*
 import java.util.*
 
 object UserService {
-    suspend fun createUser(newUser: UserPayload): User = dbQuery {
+    suspend fun createUser(newUser: UserCredentials): User = dbQuery {
         Users.insert {
             it[email] = newUser.email
             it[passwordHash] = newUser.password
@@ -36,10 +30,16 @@ object UserService {
         }.mapNotNull { toUser(it) }.singleOrNull()
     }
 
+    suspend fun updateUser(userDTO: UpdateUserDTO, user: User): User = dbQuery {
+        Users.update({Users.uuid eq user.uuid}) {
+            it[email] = userDTO.email ?: user.email
+        }
+        Users.select { Users.uuid eq user.uuid }.first().let { toUser(it) }
+    }
 
     private fun toUser(row: ResultRow): User =
         User(
-            uuid = row[Users.uuid].toString(),
+            uuid = row[Users.uuid],
             email = row[Users.email],
             passwordHash = row[Users.passwordHash],
             role = row[Users.role]

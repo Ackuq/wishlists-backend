@@ -3,7 +3,7 @@ package io.github.ackuq.routes
 import io.github.ackuq.TestDatabaseFactory
 import io.github.ackuq.controllers.UserController
 import io.github.ackuq.models.User
-import io.github.ackuq.models.UserPayload
+import io.github.ackuq.models.UserCredentials
 import io.github.ackuq.utils.ApiSuccess
 import io.github.ackuq.withTestServer
 import io.ktor.http.*
@@ -23,7 +23,7 @@ class UsersTest {
 
     private val databaseFactory: TestDatabaseFactory = TestDatabaseFactory()
 
-    private val testUser = UserPayload("testUser@test.com", "password")
+    private val testUser = UserCredentials("testUser@test.com", "password")
 
     @BeforeTest
     fun setup() {
@@ -38,7 +38,7 @@ class UsersTest {
     @Test
     fun register() = withTestServer {
         val payload = Json.encodeToString(
-            UserPayload("test@testson.com", "password")
+            UserCredentials("test@testson.com", "password")
         )
         with(handleRequest(HttpMethod.Post, "api/v1/auth/register") {
             addHeader(HttpHeaders.Accept, ContentType.Application.Json.toString())

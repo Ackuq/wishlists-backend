@@ -13,8 +13,21 @@ object Users : Table("users") {
     val role: Column<Role> = enumeration("role", Role::class)
 }
 
-@Serializable
-data class User(val uuid: String, val email: String, val passwordHash: String, val role: Role) : Principal
+data class User(val uuid: UUID, val email: String, val passwordHash: String, val role: Role) : Principal
 
 @Serializable
-data class UserPayload(val email: String, val password: String)
+data class UserCredentials(val email: String, val password: String)
+
+@Serializable
+data class UserDTO(val uuid: String, val email: String, val role: Role)
+
+@Serializable
+data class UpdateUserDTO(val email: String? = null)
+
+fun User.toUserDTO() = UserDTO(uuid.toString(), email, role)
+
+@Serializable
+enum class Role {
+    Admin,
+    Customer
+}

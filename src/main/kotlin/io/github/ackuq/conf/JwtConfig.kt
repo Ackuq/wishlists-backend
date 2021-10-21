@@ -23,7 +23,7 @@ object JwtConfig {
     fun generateToken(user: User): String =
         JWT.create()
             .withIssuer(issuer)
-            .withClaim("uuid", user.uuid)
+            .withClaim("uuid", user.uuid.toString())
             .withExpiresAt(getExpiration())
             .sign(algorithm)
 

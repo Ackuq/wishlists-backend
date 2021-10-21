@@ -9,6 +9,7 @@ import kotlinx.coroutines.withContext
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.slf4j.LoggerFactory
 
 interface IDatabaseFactory {
     fun init()
@@ -16,6 +17,7 @@ interface IDatabaseFactory {
 
 
 object DatabaseFactory : IDatabaseFactory {
+    private val logger = LoggerFactory.getLogger(this.javaClass)
     private val appConfig = HoconApplicationConfig(ConfigFactory.load())
     private val dbURL = appConfig.property("db.jdbcURL").getString()
     private val dbUser = appConfig.property("db.dbUser").getString()
