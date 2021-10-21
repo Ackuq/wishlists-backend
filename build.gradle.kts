@@ -10,7 +10,7 @@ plugins {
     application
     kotlin("jvm") version "1.5.31"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.5.31"
-    id("org.flywaydb.flyway") version "8.0.1"
+    id("org.flywaydb.flyway") version "8.0.2"
 }
 
 group = "io.github.ackuq"
