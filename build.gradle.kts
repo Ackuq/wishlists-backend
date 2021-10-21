@@ -1,10 +1,10 @@
-val ktor_version: String by project
-val kotlin_version: String by project
-val logback_version: String by project
-val postgresql_version: String by project
-val hikariCP_version: String by project
-val exposed_version: String by project
-val flyway_version: String by project
+val ktor_version = "1.6.4"
+val kotlin_version = "1.5.31"
+val logback_version = "1.2.6"
+val postgresql_version = "42.3.0"
+val hikariCP_version = "5.0.0"
+val exposed_version = "0.17.14"
+val flyway_version = "8.0.1"
 
 plugins {
     application
