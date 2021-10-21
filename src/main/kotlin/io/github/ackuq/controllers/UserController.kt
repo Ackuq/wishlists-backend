@@ -17,8 +17,8 @@ object UserController {
     suspend fun register(payload: UserPayload): String {
         val hashedPassword = BCrypt.hashpw(payload.password, BCrypt.gensalt())
         val databasePayload = UserPayload(payload.email, hashedPassword)
-        val uuid = UserService.createUser(databasePayload)
-        return JwtConfig.generateToken(uuid.toString())
+        val user = UserService.createUser(databasePayload)
+        return JwtConfig.generateToken(user.uuid, user.role)
     }
 
     suspend fun login(payload: UserPayload): String {
@@ -31,7 +31,7 @@ object UserController {
                 throw BadRequestException("Passwords does not match")
             }
             else -> {
-                return JwtConfig.generateToken(user.uuid)
+                return JwtConfig.generateToken(user.uuid, user.role)
             }
         }
 

@@ -12,12 +12,12 @@ import org.jetbrains.exposed.sql.insert
 import java.util.*
 
 object UserService {
-    suspend fun createUser(newUser: UserPayload): UUID = dbQuery {
+    suspend fun createUser(newUser: UserPayload): User = dbQuery {
         Users.insert {
             it[email] = newUser.email
             it[passwordHash] = newUser.password
             it[role] = Role.Customer
-        } get Users.uuid
+        }.resultedValues!!.first().let { toUser(it) }
     }
 
     suspend fun getAllUsers(): List<User> = dbQuery {

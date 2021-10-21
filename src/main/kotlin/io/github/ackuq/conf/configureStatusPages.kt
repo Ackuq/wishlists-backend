@@ -56,7 +56,7 @@ fun Application.configureStatusPages() {
             handleApiError("You do not have permission to access this", it, call)
         }
         status(HttpStatusCode.Unauthorized) {
-            handleApiError("Please authenticate", it, call)
+            handleApiError("Not authorized to view this page", it, call)
         }
     }
 }
