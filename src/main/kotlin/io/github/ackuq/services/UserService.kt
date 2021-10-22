@@ -1,47 +1,39 @@
 package io.github.ackuq.services
 
-import io.github.ackuq.conf.DatabaseFactory.dbQuery
-import io.github.ackuq.models.*
-import org.jetbrains.exposed.sql.*
+import io.github.ackuq.dao.User
+import io.github.ackuq.dao.Users
+import io.github.ackuq.dto.Role
+import io.github.ackuq.dto.UpdateUserDTO
+import io.github.ackuq.dto.UserCredentials
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
 object UserService {
-    suspend fun createUser(newUser: UserCredentials): User = dbQuery {
-        Users.insert {
-            it[email] = newUser.email
-            it[passwordHash] = newUser.password
-            it[role] = Role.Customer
-        }.resultedValues!!.first().let { toUser(it) }
-    }
-
-    suspend fun getAllUsers(): List<User> = dbQuery {
-        Users.selectAll().map { toUser(it) }
-    }
-
-    suspend fun getUserByEmail(email: String): User? = dbQuery {
-        Users.select {
-            (Users.email eq email)
-        }.mapNotNull { toUser(it) }.singleOrNull()
-    }
-
-    suspend fun getUserByUUID(uuid: UUID): User? = dbQuery {
-        Users.select {
-            (Users.uuid eq uuid)
-        }.mapNotNull { toUser(it) }.singleOrNull()
-    }
-
-    suspend fun updateUser(userDTO: UpdateUserDTO, user: User): User = dbQuery {
-        Users.update({Users.uuid eq user.uuid}) {
-            it[email] = userDTO.email ?: user.email
+    fun createUser(newUser: UserCredentials): User = transaction {
+        User.new {
+            email = newUser.email
+            passwordHash = newUser.password
+            role = Role.Customer
         }
-        Users.select { Users.uuid eq user.uuid }.first().let { toUser(it) }
     }
 
-    private fun toUser(row: ResultRow): User =
-        User(
-            uuid = row[Users.uuid],
-            email = row[Users.email],
-            passwordHash = row[Users.passwordHash],
-            role = row[Users.role]
-        )
+    fun getAllUsers(): List<User> = transaction {
+        User.all().toList()
+    }
+
+    fun getUserByEmail(email: String): User? = transaction {
+        User.find { Users.email eq email }.firstOrNull()
+    }
+
+    fun getUserByUUID(uuid: UUID): User? = transaction {
+        User.findById(uuid)
+    }
+
+    fun updateUser(user: User, userDTO: UpdateUserDTO): User = transaction {
+        if (userDTO.email !== null) {
+            user.email = userDTO.email
+        }
+        user
+    }
+
 }

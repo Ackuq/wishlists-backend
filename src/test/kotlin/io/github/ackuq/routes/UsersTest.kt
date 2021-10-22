@@ -2,8 +2,8 @@ package io.github.ackuq.routes
 
 import io.github.ackuq.TestDatabaseFactory
 import io.github.ackuq.controllers.UserController
-import io.github.ackuq.models.User
-import io.github.ackuq.models.UserCredentials
+import io.github.ackuq.dto.UserCredentials
+import io.github.ackuq.dto.UserDTO
 import io.github.ackuq.utils.ApiSuccess
 import io.github.ackuq.withTestServer
 import io.ktor.http.*
@@ -85,7 +85,7 @@ class UsersTest {
             addHeader(HttpHeaders.Authorization, "Bearer $token")
         }) {
             assertEquals(HttpStatusCode.OK, response.status())
-            val data = Json.decodeFromString<ApiSuccess<User>>(
+            val data = Json.decodeFromString<ApiSuccess<UserDTO>>(
                 response.content!!
             )
             assertEquals(HttpStatusCode.OK.value, data.status)

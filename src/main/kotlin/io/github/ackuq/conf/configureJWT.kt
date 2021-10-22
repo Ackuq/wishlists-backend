@@ -1,13 +1,13 @@
 package io.github.ackuq.conf
 
-import io.github.ackuq.models.Role
+import io.github.ackuq.dto.Role
 import io.github.ackuq.services.UserService
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.auth.jwt.*
 import java.util.*
 
-suspend fun handleAuthentication(uuid: String, roles: List<Role>?): Principal? {
+fun handleAuthentication(uuid: String, roles: List<Role>?): Principal? {
     if (uuid == "") {
         return null
     }

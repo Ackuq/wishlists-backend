@@ -1,8 +1,8 @@
 package io.github.ackuq.controllers
 
 import io.github.ackuq.TestDatabaseFactory
-import io.github.ackuq.models.Role
-import io.github.ackuq.models.UserCredentials
+import io.github.ackuq.dto.Role
+import io.github.ackuq.dto.UserCredentials
 import io.github.ackuq.services.UserService
 import kotlinx.coroutines.runBlocking
 import kotlin.test.AfterTest
@@ -32,12 +32,12 @@ class UsersTest {
 
             UserController.register(userCredentials)
 
-            val user = UserController.getUserByEmail(userCredentials.email)
+            val user = UserService.getUserByEmail(userCredentials.email)!!
             val users = UserService.getAllUsers()
 
 
             assertEquals(1, users.size)
-            assertEquals(user, users.first())
+            assertEquals(user.id.value, users.first().id.value)
             assertEquals(Role.Customer, user.role)
             assertEquals(userCredentials.email, user.email)
         }
