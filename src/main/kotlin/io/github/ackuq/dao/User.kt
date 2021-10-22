@@ -12,7 +12,9 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
 object Users : UUIDTable(name = "users", columnName = "uuid") {
-    val email: Column<String> = varchar("email", 100).uniqueIndex()
+    val email: Column<String> = varchar("email", 255).uniqueIndex()
+    val firstName: Column<String?> = varchar("first_name", 100).nullable()
+    val lastName: Column<String?> = varchar("last_name", 100).nullable()
     val passwordHash: Column<String> = varchar("password_hash", 60)
     val role: Column<Role> = enumeration("role", Role::class)
 }
