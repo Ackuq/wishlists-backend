@@ -25,6 +25,8 @@ class UsersTest {
         databaseFactory.close()
     }
 
+    val user = UserCredentials(email = "test@testsson.com", password = "secret")
+
     @Test
     fun createUser(): Unit =
         runBlocking {
