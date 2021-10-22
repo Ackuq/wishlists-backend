@@ -1,4 +1,4 @@
 CREATE TABLE wish_lists (
     id SERIAL PRIMARY KEY,
-    owner_id UUID REFERENCES users
+    owner_id UUID NOT NULL REFERENCES users ON DELETE CASCADE
 )
