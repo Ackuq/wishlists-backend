@@ -34,9 +34,11 @@ fun Application.configureStatusPages() {
         }
         exception<Exception> {
             handleApiException(it, HttpStatusCode.InternalServerError, call)
+            throw it
         }
         exception<Throwable> {
             handleApiException(it, HttpStatusCode.InternalServerError, call)
+            throw it
         }
         /**
          * Statuses
