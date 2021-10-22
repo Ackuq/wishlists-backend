@@ -2,12 +2,14 @@ package io.github.ackuq.routes
 
 import io.github.ackuq.conf.AuthorizationException
 import io.github.ackuq.dao.User
+import io.github.ackuq.dto.WishListPayload
 import io.github.ackuq.services.WishListService
 import io.github.ackuq.utils.handleApiSuccess
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.features.*
 import io.ktor.http.*
+import io.ktor.request.*
 import io.ktor.routing.*
 
 fun Route.wishLists() {
@@ -35,6 +37,19 @@ fun Route.wishList() {
                 val id = call.parameters["id"]?.toIntOrNull() ?: throw BadRequestException("No id specified")
                 val wishList = WishListService.getWishList(user, id)
                 handleApiSuccess(wishList.toDTO(), HttpStatusCode.OK, call)
+            }
+            put {
+                val user = call.principal<User>() ?: throw AuthorizationException("Invalid credentials")
+                val id = call.parameters["id"]?.toIntOrNull() ?: throw BadRequestException("No id specified")
+                val wishListPayload = call.receive<WishListPayload>()
+                val wishList = WishListService.updateWishList(user, id, wishListPayload)
+                handleApiSuccess(wishList.toDTO(), HttpStatusCode.OK, call)
+            }
+            delete {
+                val user = call.principal<User>() ?: throw AuthorizationException("Invalid credentials")
+                val id = call.parameters["id"]?.toIntOrNull() ?: throw BadRequestException("No id specified")
+                WishListService.deleteWishList(user, id)
+                handleApiSuccess("Successfully deleted", HttpStatusCode.OK, call)
             }
         }
     }

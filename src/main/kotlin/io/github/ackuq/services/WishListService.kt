@@ -5,10 +5,11 @@ import io.github.ackuq.dao.User
 import io.github.ackuq.dao.WishList
 import io.github.ackuq.dao.WishLists
 import io.github.ackuq.dto.Role
-import io.ktor.auth.*
+import io.github.ackuq.dto.WishListPayload
 import io.ktor.features.*
 import org.jetbrains.exposed.dao.load
 import org.jetbrains.exposed.dao.with
+import org.jetbrains.exposed.sql.SizedCollection
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
@@ -19,8 +20,14 @@ object WishListService {
         }
     }
 
-    fun getTableById(id: Int): WishList? = transaction {
-        WishList.findById(id)?.load(WishList::owner)
+    fun updateWishList(user: User, id: Int, payload: WishListPayload): WishList = transaction {
+        val wishList = WishList.findById(id) ?: throw NotFoundException("Wishlist not found")
+        if(hasWriteAccess(user, wishList)) {
+            wishList.users = SizedCollection(UserService.getUsers(payload.users.map { UUID.fromString(it) }))
+            wishList
+        } else {
+            throw AuthorizationException("Not authorized to update this")
+        }
     }
 
     fun getUsersLists(user: User): List<WishList> = transaction {
@@ -29,10 +36,21 @@ object WishListService {
 
     fun getWishList(user: User, id: Int): WishList = transaction {
         val wishList = WishList.findById(id) ?: throw NotFoundException("Wishlist not found")
-        if(user.role == Role.Admin || user.id.value == wishList.owner.id.value) {
+        if (hasWriteAccess(user, wishList)) {
             wishList
         } else {
             throw AuthorizationException("Not authorized to view this page")
         }
     }
+
+    fun deleteWishList(user: User, id: Int) = transaction {
+        val wishList = WishList.findById(id) ?: throw NotFoundException("Wishlist not found")
+        if(hasWriteAccess(user, wishList)) {
+            wishList.delete()
+        } else {
+            throw AuthorizationException("Not authorized to view this page")
+        }
+    }
+
+    private fun hasWriteAccess(user: User, wishList: WishList) = (user.role == Role.Admin || user.id.value == wishList.owner.id.value)
 }

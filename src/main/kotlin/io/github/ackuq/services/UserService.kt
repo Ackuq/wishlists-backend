@@ -21,6 +21,10 @@ object UserService {
         User.all().toList()
     }
 
+    fun getUsers(uuids: List<UUID>): List<User> = transaction {
+        User.forIds(uuids).toList()
+    }
+
     fun getUserByEmail(email: String): User? = transaction {
         User.find { Users.email eq email }.firstOrNull()
     }

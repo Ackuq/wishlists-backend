@@ -8,6 +8,7 @@ import org.jetbrains.exposed.dao.UUIDEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
 object Users : UUIDTable(name = "users", columnName = "uuid") {
@@ -22,7 +23,17 @@ class User(uuid: EntityID<UUID>) : UUIDEntity(uuid), Principal {
     var email by Users.email
     var passwordHash by Users.passwordHash
     var role by Users.role
+    var wishLists by WishList via UsersWishLists
+    val ownedWishLists by WishList referrersOn WishLists.owner
 
-    fun toDTO() = UserDTO(this.id.value.toString(), this.email, this.role)
+    fun toDTO() = transaction {
+        UserDTO(
+            this@User.id.value.toString(),
+            this@User.email,
+            this@User.role,
+            this@User.ownedWishLists.map { it.id.value },
+            this@User.wishLists.map { it.id.value }
+        )
+    }
 }
 
