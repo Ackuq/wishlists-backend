@@ -12,6 +12,7 @@ plugins {
     kotlin("jvm") version "1.5.31"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.5.31"
     id("org.flywaydb.flyway") version "8.0.2"
+    id("com.jetbrains.exposed.gradle.plugin") version "0.2.1"
 }
 
 group = "io.github.ackuq"
@@ -78,4 +79,12 @@ flyway {
     password = System.getenv("DB_PASSWORD")
     baselineOnMigrate = true
     locations = arrayOf("filesystem:src/main/resources/db/migration")
+}
+
+exposedCodeGeneratorConfig {
+    configFilename = "exposed-generation-conf.yml"
+    user = System.getenv("DB_USER")
+    password = System.getenv("DB_PASSWORD")
+    databaseName = "wishlists"
+    databaseDriver = "postgresql"
 }
