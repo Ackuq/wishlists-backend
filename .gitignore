@@ -32,3 +32,6 @@ captures/
 
 # Postgres data
 .tmp
+
+# PGAdmin
+.pgadmin
