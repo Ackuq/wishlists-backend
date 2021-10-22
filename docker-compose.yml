@@ -1,6 +1,21 @@
 version: "3.8"
 
 services:
+    pgadmin:
+        depends_on:
+            - postgres
+        image: dpage/pgadmin4:6.1
+        environment:
+            PGADMIN_DEFAULT_EMAIL: admin@pgadmin.org
+            PGADMIN_DEFAULT_PASSWORD: pass
+            PGADMIN_CONFIG_SERVER_MODE: 'False'
+        ports:
+            - "7000:80"
+        volumes:
+            - .pgadmin:/var/lib/pgadmin
+        networks:
+            - postgres
+
     postgres:
         image: postgres:14
         ports:
@@ -11,3 +26,9 @@ services:
             - POSTGRES_DB=wishlists
         volumes:
             - .tmp/postgresql:/var/lib/postgresql
+        networks:
+            - postgres
+
+networks:
+    postgres:
+        driver: bridge
