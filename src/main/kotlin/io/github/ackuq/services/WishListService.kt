@@ -1,11 +1,14 @@
 package io.github.ackuq.services
 
 import io.github.ackuq.conf.AuthorizationException
-import io.github.ackuq.dao.*
+import io.github.ackuq.dao.User
+import io.github.ackuq.dao.WishList
+import io.github.ackuq.dao.WishListProduct
+import io.github.ackuq.dao.WishLists
 import io.github.ackuq.dto.CreateWishListPayload
 import io.github.ackuq.dto.CreateWishListProductPayload
-import io.github.ackuq.dto.Role
 import io.github.ackuq.dto.EditWishListPayload
+import io.github.ackuq.dto.Role
 import io.ktor.features.*
 import org.jetbrains.exposed.dao.with
 import org.jetbrains.exposed.sql.SizedCollection
@@ -23,14 +26,14 @@ object WishListService {
 
     fun updateWishList(user: User, id: Int, payload: EditWishListPayload): WishList = transaction {
         val wishList = WishList.findById(id) ?: throw NotFoundException("Wishlist not found")
-        if(hasWriteAccess(user, wishList)) {
-            if(payload.users != null) {
+        if (hasWriteAccess(user, wishList)) {
+            if (payload.users != null) {
                 wishList.users = SizedCollection(UserService.getUsers(payload.users.map { UUID.fromString(it) }))
             }
-            if(payload.title != null) {
+            if (payload.title != null) {
                 wishList.title = payload.title
             }
-            if(payload.description != null) {
+            if (payload.description != null) {
                 wishList.description = payload.description
             }
             wishList
@@ -54,28 +57,31 @@ object WishListService {
 
     fun deleteWishList(user: User, id: Int) = transaction {
         val wishList = WishList.findById(id) ?: throw NotFoundException("Wishlist not found")
-        if(hasWriteAccess(user, wishList)) {
+        if (hasWriteAccess(user, wishList)) {
             wishList.delete()
         } else {
             throw AuthorizationException("Not authorized to view this page")
         }
     }
 
-    fun addProductToWishList(user: User, id: Int, createProductPayload: CreateWishListProductPayload): WishListProduct = transaction {
-        val wishList = WishList.findById(id) ?: throw BadRequestException("Wishlist not found")
-        if(hasWriteAccess(user, wishList)) {
-            WishListProduct.new {
-                wishListId = wishList.id
-                title = createProductPayload.title
-                description = createProductPayload.description
-                link = createProductPayload.link
+    fun addProductToWishList(user: User, id: Int, createProductPayload: CreateWishListProductPayload): WishListProduct =
+        transaction {
+            val wishList = WishList.findById(id) ?: throw BadRequestException("Wishlist not found")
+            if (hasWriteAccess(user, wishList)) {
+                WishListProduct.new {
+                    wishListId = wishList.id
+                    title = createProductPayload.title
+                    description = createProductPayload.description
+                    link = createProductPayload.link
+                }
+            } else {
+                throw AuthorizationException("Not authorized to add products")
             }
-        } else {
-            throw AuthorizationException("Not authorized to add products")
         }
-    }
 
     fun hasReadAccess(user: User, wishList: WishList) =
         (user.role == Role.Admin) || user.id.value == wishList.owner.id.value || user.id.value in wishList.users.map { it.id.value }
-    fun hasWriteAccess(user: User, wishList: WishList) = (user.role == Role.Admin || user.id.value == wishList.owner.id.value)
+
+    fun hasWriteAccess(user: User, wishList: WishList) =
+        (user.role == Role.Admin || user.id.value == wishList.owner.id.value)
 }

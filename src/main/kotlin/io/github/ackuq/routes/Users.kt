@@ -1,7 +1,6 @@
 package io.github.ackuq.routes
 
 import io.github.ackuq.conf.AuthorizationException
-import io.github.ackuq.controllers.UserController
 import io.github.ackuq.dao.User
 import io.github.ackuq.dto.Role
 import io.github.ackuq.dto.UpdateUserDTO
@@ -36,7 +35,8 @@ fun Route.user() {
                 if (user.id.value.toString() != uuid && user.role != Role.Admin) {
                     throw AuthorizationException("Not authorized to see this page")
                 } else {
-                    val uuidUser = UserService.getUserByUUID(UUID.fromString(uuid)) ?: throw NotFoundException("User not found")
+                    val uuidUser =
+                        UserService.getUserByUUID(UUID.fromString(uuid)) ?: throw NotFoundException("User not found")
                     handleApiSuccess(uuidUser.toDTO(), HttpStatusCode.OK, call)
                 }
             }

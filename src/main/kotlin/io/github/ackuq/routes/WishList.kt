@@ -4,8 +4,8 @@ import io.github.ackuq.conf.AuthorizationException
 import io.github.ackuq.dao.User
 import io.github.ackuq.dto.CreateWishListPayload
 import io.github.ackuq.dto.CreateWishListProductPayload
-import io.github.ackuq.dto.EditWishListProductPayload
 import io.github.ackuq.dto.EditWishListPayload
+import io.github.ackuq.dto.EditWishListProductPayload
 import io.github.ackuq.services.WishListProductService
 import io.github.ackuq.services.WishListService
 import io.github.ackuq.utils.handleApiSuccess

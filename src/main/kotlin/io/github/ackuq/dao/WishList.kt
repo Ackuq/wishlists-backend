@@ -26,10 +26,10 @@ class WishList(id: EntityID<Int>) : IntEntity(id) {
 
     fun toDTO(): WishListDTO = transaction {
         WishListDTO(
-            this@WishList.id.value,
-            this@WishList.title,
-            this@WishList.description,
-            this@WishList.users.map { it.email },
-            this@WishList.products.map { it.toDTO() })
+            id = this@WishList.id.value,
+            title = this@WishList.title,
+            description = this@WishList.description,
+            users = this@WishList.users.map { it.email },
+            products = this@WishList.products.map { it.toDTO() })
     }
 }
