@@ -5,6 +5,7 @@ import io.github.ackuq.conf.JwtConfig
 import io.github.ackuq.dto.UserCredentials
 import io.github.ackuq.dto.UserDTO
 import io.github.ackuq.services.UserService
+import io.github.ackuq.utils.ApiError
 import io.github.ackuq.utils.ApiSuccess
 import io.github.ackuq.withTestServer
 import io.ktor.http.*
@@ -59,6 +60,27 @@ class UsersTest {
             // Then
             assertEquals(HttpStatusCode.Created, response.status())
             assertEquals(HttpStatusCode.Created.value, data.status)
+        }
+    }
+
+    @Test
+    fun registerConflict() = withTestServer {
+        // Given
+        val payload = Json.encodeToString(user)
+        setUpUsers()
+
+        // When
+        with(handleRequest(HttpMethod.Post, "api/v1/auth/register") {
+            addHeader(HttpHeaders.Accept, ContentType.Application.Json.toString())
+            addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+            setBody(payload)
+        }) {
+            val data = Json.decodeFromString<ApiError>(
+                response.content!!
+            )
+            // Then
+            assertEquals(HttpStatusCode.BadRequest, response.status())
+            assertEquals(HttpStatusCode.BadRequest.value, data.status)
         }
     }
 

@@ -5,15 +5,20 @@ import io.github.ackuq.dao.Users
 import io.github.ackuq.dto.Role
 import io.github.ackuq.dto.UpdateUserDTO
 import io.github.ackuq.dto.UserCredentials
+import io.ktor.features.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
 object UserService {
     fun createUser(newUser: UserCredentials): User = transaction {
-        User.new {
-            email = newUser.email
-            passwordHash = newUser.password
-            role = Role.Customer
+        if (getUserByEmail(newUser.email) == null) {
+            User.new {
+                email = newUser.email
+                passwordHash = newUser.password
+                role = Role.Customer
+            }
+        } else {
+            throw BadRequestException("User with this email already exists")
         }
     }
 
