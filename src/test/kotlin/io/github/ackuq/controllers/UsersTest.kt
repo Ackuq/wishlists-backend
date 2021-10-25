@@ -1,6 +1,7 @@
 package io.github.ackuq.controllers
 
 import io.github.ackuq.TestDatabaseFactory
+import io.github.ackuq.conf.JwtConfig
 import io.github.ackuq.dto.Role
 import io.github.ackuq.dto.UserCredentials
 import io.github.ackuq.services.UserService
@@ -25,14 +26,12 @@ class UsersTest {
         databaseFactory.close()
     }
 
-    val user = UserCredentials(email = "test@testsson.com", password = "secret")
+    val userCredentials = UserCredentials(email = "test@testsson.com", password = "secret")
 
     @Test
     fun createUser(): Unit =
         runBlocking {
-            val userCredentials = UserCredentials("test@testson.com", "pass")
-
-            UserController.register(userCredentials)
+            JwtConfig.registerCustomer(userCredentials)
 
             val user = UserService.getUserByEmail(userCredentials.email)!!
             val users = UserService.getAllUsers()

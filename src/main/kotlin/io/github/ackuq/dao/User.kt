@@ -23,6 +23,8 @@ class User(uuid: EntityID<UUID>) : UUIDEntity(uuid), Principal {
     companion object : UUIDEntityClass<User>(Users)
 
     var email by Users.email
+    val firstName by Users.firstName
+    val lastName by Users.lastName
     var passwordHash by Users.passwordHash
     var role by Users.role
     var wishLists by WishList via UsersWishLists
@@ -30,11 +32,13 @@ class User(uuid: EntityID<UUID>) : UUIDEntity(uuid), Principal {
 
     fun toDTO() = transaction {
         UserDTO(
-            this@User.id.value.toString(),
-            this@User.email,
-            this@User.role,
-            this@User.ownedWishLists.map { it.id.value },
-            this@User.wishLists.map { it.id.value }
+            uuid = this@User.id.value.toString(),
+            firstName = this@User.firstName,
+            lastName = this@User.lastName,
+            email = this@User.email,
+            role = this@User.role,
+            ownedWishLists = this@User.ownedWishLists.map { it.id.value },
+            memberWishLists = this@User.wishLists.map { it.id.value }
         )
     }
 }

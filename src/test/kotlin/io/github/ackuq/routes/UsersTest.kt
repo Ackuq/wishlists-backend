@@ -1,7 +1,7 @@
 package io.github.ackuq.routes
 
 import io.github.ackuq.TestDatabaseFactory
-import io.github.ackuq.controllers.UserController
+import io.github.ackuq.conf.JwtConfig
 import io.github.ackuq.dto.UserCredentials
 import io.github.ackuq.dto.UserDTO
 import io.github.ackuq.services.UserService
@@ -37,8 +37,8 @@ class UsersTest {
     }
 
     private fun setUpUsers(): String {
-        val token = UserController.register(user)
-        UserController.register(otherUser)
+        val token = JwtConfig.registerCustomer(user)
+        JwtConfig.registerCustomer(otherUser)
         return token
     }
 

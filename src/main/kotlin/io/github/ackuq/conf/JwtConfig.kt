@@ -5,7 +5,11 @@ import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
 import com.typesafe.config.ConfigFactory
 import io.github.ackuq.dao.User
+import io.github.ackuq.dto.UserCredentials
+import io.github.ackuq.services.UserService
 import io.ktor.config.*
+import io.ktor.features.*
+import org.mindrot.jbcrypt.BCrypt
 import java.util.*
 
 object JwtConfig {
@@ -20,11 +24,33 @@ object JwtConfig {
 
     private fun getExpiration() = Date(System.currentTimeMillis() + validityInMs)
 
-    fun generateToken(user: User): String =
+    private fun generateToken(user: User): String =
         JWT.create()
             .withIssuer(issuer)
             .withClaim("uuid", user.id.value.toString())
             .withExpiresAt(getExpiration())
             .sign(algorithm)
+
+    fun registerCustomer(userCredentials: UserCredentials): String {
+        val hashedPassword = BCrypt.hashpw(userCredentials.password, BCrypt.gensalt())
+        val databasePayload = UserCredentials(userCredentials.email, hashedPassword)
+        val user = UserService.createUser(databasePayload)
+        return generateToken(user)
+    }
+
+    fun loginUser(userCredentials: UserCredentials): String {
+        val user = UserService.getUserByEmail(userCredentials.email)
+        when {
+            user === null -> {
+                throw NotFoundException("User not found")
+            }
+            !BCrypt.checkpw(userCredentials.password, user.passwordHash) -> {
+                throw BadRequestException("Passwords does not match")
+            }
+            else -> {
+                return generateToken(user)
+            }
+        }
+    }
 
 }

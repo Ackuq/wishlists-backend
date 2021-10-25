@@ -29,12 +29,12 @@ class WishListProduct(id: EntityID<Int>) : IntEntity(id) {
 
     fun toDTO() = transaction {
         WishListProductDTO(
-            this@WishListProduct.id.value,
-            this@WishListProduct.title,
-            this@WishListProduct.description,
-            this@WishListProduct.link,
-            this@WishListProduct.claimedBy?.email,
-            this@WishListProduct.wishListId.value
+            id = this@WishListProduct.id.value,
+            title = this@WishListProduct.title,
+            description = this@WishListProduct.description,
+            link = this@WishListProduct.link,
+            claimedBy = this@WishListProduct.claimedBy?.email,
+            wishListId = this@WishListProduct.wishListId.value
         )
     }
 }
