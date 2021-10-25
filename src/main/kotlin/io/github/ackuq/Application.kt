@@ -20,6 +20,7 @@ fun Application.module(databaseFactory: IDatabaseFactory = DatabaseFactory) {
     install(ContentNegotiation) {
         json()
     }
+    install(DefaultHeaders)
     install(AutoHeadResponse)
     configureCORS()
     configureJWT()
