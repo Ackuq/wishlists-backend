@@ -5,7 +5,8 @@ import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
 import com.typesafe.config.ConfigFactory
 import io.github.ackuq.dao.User
-import io.github.ackuq.dto.UserCredentials
+import io.github.ackuq.dto.TokenDTO
+import io.github.ackuq.dto.UserCredentialsDTO
 import io.github.ackuq.services.UserService
 import io.ktor.config.*
 import io.ktor.features.*
@@ -18,27 +19,28 @@ object JwtConfig {
     private val issuer = appConfig.property("jwt.issuer").getString()
     private val algorithm = Algorithm.HMAC256(secret)
 
-    private const val validityInMs = 36_000_00 * 10 // 10 hours
+    private const val accessTokenValidity = 1000 * 60 * 60 * 10 // 10 hours
 
     val verifier: JWTVerifier = JWT.require(algorithm).withIssuer(issuer).build()
 
-    private fun getExpiration() = Date(System.currentTimeMillis() + validityInMs)
+    private fun getAccessTokenExpiration() = Date(System.currentTimeMillis() + accessTokenValidity)
 
-    private fun generateToken(user: User): String =
-        JWT.create()
+    private fun generateToken(user: User): TokenDTO = TokenDTO(
+        accessToken = JWT.create()
             .withIssuer(issuer)
             .withClaim("uuid", user.id.value.toString())
-            .withExpiresAt(getExpiration())
+            .withExpiresAt(getAccessTokenExpiration())
             .sign(algorithm)
+    )
 
-    fun registerCustomer(userCredentials: UserCredentials): String {
+    fun registerCustomer(userCredentials: UserCredentialsDTO): TokenDTO {
         val hashedPassword = BCrypt.hashpw(userCredentials.password, BCrypt.gensalt())
-        val databasePayload = UserCredentials(userCredentials.email, hashedPassword)
+        val databasePayload = UserCredentialsDTO(userCredentials.email, hashedPassword)
         val user = UserService.createUser(databasePayload)
         return generateToken(user)
     }
 
-    fun loginUser(userCredentials: UserCredentials): String {
+    fun loginUser(userCredentials: UserCredentialsDTO): TokenDTO {
         val user = UserService.getUserByEmail(userCredentials.email)
         when {
             user === null -> {

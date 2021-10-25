@@ -1,12 +1,8 @@
 package io.github.ackuq.routes
 
 import io.bkbn.kompendium.Notarized.notarizedPost
-import io.bkbn.kompendium.models.meta.MethodInfo
-import io.bkbn.kompendium.models.meta.RequestInfo
-import io.bkbn.kompendium.models.meta.ResponseInfo
 import io.github.ackuq.conf.JwtConfig
-import io.github.ackuq.dto.UserCredentials
-import io.github.ackuq.utils.ApiSuccess
+import io.github.ackuq.dto.UserCredentialsDTO
 import io.github.ackuq.utils.SimpleResponseInfo
 import io.github.ackuq.utils.handleApiSuccess
 import io.github.ackuq.utils.postInfo
@@ -21,14 +17,14 @@ fun Route.login() {
         notarizedPost(postInfo(
             "Login",
             "Login new user",
-            UserCredentials("test@testsson.com", "password"),
+            UserCredentialsDTO("test@testsson.com", "password"),
             SimpleResponseInfo(
                 HttpStatusCode.Created,
                 "JWT_TOKEN"
             ),
             setOf(BadRequestException::class, NotFoundException::class)
         )) {
-            val userCredentials = call.receive<UserCredentials>()
+            val userCredentials = call.receive<UserCredentialsDTO>()
             val token = JwtConfig.loginUser(userCredentials)
             application.log.debug("User ${userCredentials.email} logged in")
             handleApiSuccess(token, HttpStatusCode.OK, call)
@@ -42,14 +38,14 @@ fun Route.register() {
         notarizedPost(postInfo(
             "Register",
             "Register new customer",
-            UserCredentials("test@testsson.com", "password"),
+            UserCredentialsDTO("test@testsson.com", "password"),
             SimpleResponseInfo(
                 HttpStatusCode.Created,
                 "JWT_TOKEN"
             ),
             setOf(BadRequestException::class)
         )) {
-            val userCredentials = call.receive<UserCredentials>()
+            val userCredentials = call.receive<UserCredentialsDTO>()
             val token = JwtConfig.registerCustomer(userCredentials)
             application.log.debug("Registered new user ${userCredentials.email}")
             handleApiSuccess(token, HttpStatusCode.Created, call)

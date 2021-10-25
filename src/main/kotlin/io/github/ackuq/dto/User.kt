@@ -14,7 +14,10 @@ data class UserDTO(
 )
 
 @Serializable
-data class UserCredentials(val email: String, val password: String)
+data class TokenDTO(val accessToken: String)
+
+@Serializable
+data class UserCredentialsDTO(val email: String, val password: String)
 
 @Serializable
 data class UpdateUserDTO(val email: String? = null)

@@ -3,7 +3,7 @@ package io.github.ackuq.controllers
 import io.github.ackuq.TestDatabaseFactory
 import io.github.ackuq.conf.JwtConfig
 import io.github.ackuq.dto.Role
-import io.github.ackuq.dto.UserCredentials
+import io.github.ackuq.dto.UserCredentialsDTO
 import io.github.ackuq.services.UserService
 import kotlinx.coroutines.runBlocking
 import kotlin.test.AfterTest
@@ -26,7 +26,7 @@ class UsersTest {
         databaseFactory.close()
     }
 
-    val userCredentials = UserCredentials(email = "test@testsson.com", password = "secret")
+    val userCredentials = UserCredentialsDTO(email = "test@testsson.com", password = "secret")
 
     @Test
     fun createUser(): Unit =
