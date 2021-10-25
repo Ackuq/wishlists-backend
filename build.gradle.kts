@@ -6,6 +6,7 @@ val hikariCPVersion = "5.0.0"
 val exposedVersion = "0.35.3"
 val flywayVersion = "8.0.2"
 val h2Version = "1.4.200"
+val kompendiumVersion = "1.9.1"
 
 plugins {
     application
@@ -51,6 +52,9 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     // Flyway for DB migrations
     implementation("org.flywaydb:flyway-core:$flywayVersion")
+    // API generation
+    implementation("io.bkbn:kompendium-core:$kompendiumVersion")
+    implementation("io.bkbn:kompendium-auth:$kompendiumVersion")
     // Test dependencies
     testImplementation("com.h2database:h2:$h2Version")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")

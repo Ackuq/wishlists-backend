@@ -1,10 +1,15 @@
 package io.github.ackuq.conf
 
+import io.bkbn.kompendium.auth.KompendiumAuth.notarizedBasic
+import io.bkbn.kompendium.auth.KompendiumAuth.notarizedJwt
 import io.github.ackuq.dto.Role
+import io.github.ackuq.dto.UserCredentials
 import io.github.ackuq.services.UserService
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.auth.jwt.*
+import io.ktor.features.*
+import org.mindrot.jbcrypt.BCrypt
 import java.util.*
 
 fun handleAuthentication(uuid: String, roles: List<Role>?): Principal? {
@@ -25,14 +30,14 @@ fun handleAuthentication(uuid: String, roles: List<Role>?): Principal? {
 
 fun Application.configureJWT() {
     install(Authentication) {
-        jwt {
+        notarizedJwt {
             verifier(JwtConfig.verifier)
             validate {
                 val uuid = it.payload.getClaim("uuid").asString()
                 handleAuthentication(uuid, null)
             }
         }
-        jwt("admin") {
+        notarizedJwt("admin") {
             verifier(JwtConfig.verifier)
             validate {
                 val uuid = it.payload.getClaim("uuid").asString()

@@ -1,5 +1,8 @@
 package io.github.ackuq.conf
 
+import io.bkbn.kompendium.Notarized.notarizedException
+import io.bkbn.kompendium.models.meta.ResponseInfo
+import io.github.ackuq.utils.ApiError
 import io.github.ackuq.utils.handleApiError
 import io.github.ackuq.utils.handleApiException
 import io.ktor.application.*
@@ -7,39 +10,43 @@ import io.ktor.features.*
 import io.ktor.http.*
 import kotlinx.serialization.SerializationException
 
+inline fun <reified T : Throwable> StatusPages.Configuration.exceptionHandle(
+    status: HttpStatusCode,
+    doThrow: Boolean = false
+) =
+    notarizedException<T, ApiError>(
+        info = ResponseInfo(
+            status,
+            status.description,
+            examples = mapOf("example" to ApiError(status.value, status.description))
+        )
+    ) {
+        handleApiException(it, status, call)
+        if (doThrow) {
+            throw it
+        }
+    }
+
 fun Application.configureStatusPages() {
     install(StatusPages) {
         /**
          * Exceptions
          */
         // When the entity is not found
-        exception<NotFoundException> {
-            handleApiException(it, HttpStatusCode.NotFound, call)
-        }
+        exceptionHandle<NotFoundException>(HttpStatusCode.NotFound)
         // When the request is bad
-        exception<BadRequestException> {
-            handleApiException(it, HttpStatusCode.BadRequest, call)
-        }
+        exceptionHandle<BadRequestException>(HttpStatusCode.BadRequest)
         // No or expired credentials
-        exception<AuthenticationException> {
-            handleApiException(it, HttpStatusCode.Unauthorized, call)
-        }
+        exceptionHandle<AuthenticationException>(HttpStatusCode.Unauthorized)
         // When not enough permission
-        exception<AuthorizationException> {
-            handleApiException(it, HttpStatusCode.Forbidden, call)
-        }
+        exceptionHandle<AuthorizationException>(HttpStatusCode.Forbidden)
         // Serialization errors due to payload
-        exception<SerializationException> {
-            handleApiException(it, HttpStatusCode.BadRequest, call)
-        }
-        exception<Exception> {
-            handleApiException(it, HttpStatusCode.InternalServerError, call)
-            throw it
-        }
-        exception<Throwable> {
-            handleApiException(it, HttpStatusCode.InternalServerError, call)
-            throw it
-        }
+        exceptionHandle<SerializationException>(HttpStatusCode.BadRequest)
+        // Something unexpected
+        exceptionHandle<Throwable>(
+            HttpStatusCode.InternalServerError,
+            doThrow = true
+        )
         /**
          * Statuses
          */
