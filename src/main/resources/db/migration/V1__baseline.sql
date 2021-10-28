@@ -8,7 +8,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE wish_lists (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     owner_id UUID NOT NULL,
     title VARCHAR(1000) NOT NULL,
     description TEXT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE wish_lists (
 );
 
 CREATE TABLE wish_list_products (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     title VARCHAR(1000) NOT NULL,
     description TEXT NULL,
     link TEXT NULL,

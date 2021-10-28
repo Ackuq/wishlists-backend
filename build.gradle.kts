@@ -77,6 +77,12 @@ tasks {
     }
 }
 
+flyway {
+    url = System.getenv("DB_URL")
+    user = System.getenv("DB_USER")
+    password = System.getenv("DB_PASSWORD")
+}
+
 exposedCodeGeneratorConfig {
     configFilename = "exposed-generation-conf.yml"
     user = System.getenv("DB_USER")
