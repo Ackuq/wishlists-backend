@@ -12,4 +12,5 @@
     <logger name="com.zaxxer.hikari" level="INFO"/>
     <logger name="org.jetbrains.exposed" level="INFO"/>
     <logger name="org.flywaydb.core" level="INFO"/>
+    <logger name="io.bkbn.kompendium" level="INFO"/>
 </configuration>

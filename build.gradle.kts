@@ -77,14 +77,6 @@ tasks {
     }
 }
 
-flyway {
-    url = System.getenv("DB_URL")
-    user = System.getenv("DB_USER")
-    password = System.getenv("DB_PASSWORD")
-    baselineOnMigrate = true
-    locations = arrayOf("filesystem:src/main/resources/db/migration")
-}
-
 exposedCodeGeneratorConfig {
     configFilename = "exposed-generation-conf.yml"
     user = System.getenv("DB_USER")

@@ -14,16 +14,18 @@ import io.ktor.routing.*
 
 fun Route.login() {
     route("/login") {
-        notarizedPost(postInfo(
-            "Login",
-            "Login new user",
-            UserCredentialsDTO("test@testsson.com", "password"),
-            SimpleResponseInfo(
-                HttpStatusCode.Created,
-                "JWT_TOKEN"
-            ),
-            setOf(BadRequestException::class, NotFoundException::class)
-        )) {
+        notarizedPost(
+            postInfo(
+                "Login",
+                "Login new user",
+                UserCredentialsDTO("test@testsson.com", "password"),
+                SimpleResponseInfo(
+                    HttpStatusCode.Created,
+                    "JWT_TOKEN"
+                ),
+                setOf(BadRequestException::class, NotFoundException::class)
+            )
+        ) {
             val userCredentials = call.receive<UserCredentialsDTO>()
             val token = JwtConfig.loginUser(userCredentials)
             application.log.debug("User ${userCredentials.email} logged in")
@@ -35,16 +37,18 @@ fun Route.login() {
 
 fun Route.register() {
     route("/register") {
-        notarizedPost(postInfo(
-            "Register",
-            "Register new customer",
-            UserCredentialsDTO("test@testsson.com", "password"),
-            SimpleResponseInfo(
-                HttpStatusCode.Created,
-                "JWT_TOKEN"
-            ),
-            setOf(BadRequestException::class)
-        )) {
+        notarizedPost(
+            postInfo(
+                "Register",
+                "Register new customer",
+                UserCredentialsDTO("test@testsson.com", "password"),
+                SimpleResponseInfo(
+                    HttpStatusCode.Created,
+                    "JWT_TOKEN"
+                ),
+                setOf(BadRequestException::class)
+            )
+        ) {
             val userCredentials = call.receive<UserCredentialsDTO>()
             val token = JwtConfig.registerCustomer(userCredentials)
             application.log.debug("Registered new user ${userCredentials.email}")

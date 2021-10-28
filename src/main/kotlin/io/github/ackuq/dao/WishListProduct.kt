@@ -6,14 +6,15 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.transactions.transaction
 
-object WishListProducts : IntIdTable("wish_list_product", "id") {
+object WishListProducts : IntIdTable("wish_list_products", "id") {
     val title: Column<String> = varchar("title", 1000)
     val description: Column<String?> = text("description").nullable()
     val link: Column<String?> = text("link").nullable()
-    val claimedBy = reference("claimed_by", Users).nullable()
-    val wishList = reference("wish_list", WishLists)
+    val claimedBy = reference("claimed_by", Users, ReferenceOption.SET_NULL).nullable()
+    val wishList = reference("wish_list", WishLists, ReferenceOption.CASCADE)
 }
 
 

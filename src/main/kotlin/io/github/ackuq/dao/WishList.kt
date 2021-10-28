@@ -6,10 +6,11 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object WishLists : IntIdTable(name = "wish_lists", columnName = "id") {
-    val owner = reference("owner_id", Users)
+    val owner = reference("owner_id", Users, ReferenceOption.CASCADE)
     val title: Column<String> = varchar("title", 1000)
     val description: Column<String?> = text("description").nullable()
 }

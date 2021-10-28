@@ -1,10 +1,10 @@
 package io.github.ackuq.controllers
 
-import io.github.ackuq.TestDatabaseFactory
 import io.github.ackuq.conf.JwtConfig
 import io.github.ackuq.dto.Role
 import io.github.ackuq.dto.UserCredentialsDTO
 import io.github.ackuq.services.UserService
+import io.github.ackuq.utils.TestDatabaseFactory
 import kotlinx.coroutines.runBlocking
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest

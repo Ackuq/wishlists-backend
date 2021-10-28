@@ -8,23 +8,28 @@ CREATE TABLE users (
 );
 
 CREATE TABLE wish_lists (
-    id SERIAL PRIMARY KEY,
-    title varchar(1000) NOT NULL,
-    description TEXT,
-    owner_id UUID NOT NULL REFERENCES users ON DELETE CASCADE
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    owner_id UUID NOT NULL,
+    title VARCHAR(1000) NOT NULL,
+    description TEXT NULL,
+    CONSTRAINT fk_wish_lists_owner_id_uuid FOREIGN KEY (owner_id) REFERENCES users(uuid) ON DELETE CASCADE ON UPDATE RESTRICT
 );
 
-CREATE TABLE wish_list_product (
-    id SERIAL PRIMARY KEY,
-    title varchar(1000) NOT NULL,
-    description TEXT,
-    link TEXT,
-    claimed_by UUID REFERENCES users (uuid) ON DELETE SET NULL,
-    wish_list INT REFERENCES wish_lists (id) ON DELETE CASCADE
+CREATE TABLE wish_list_products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(1000) NOT NULL,
+    description TEXT NULL,
+    link TEXT NULL,
+    claimed_by UUID NULL,
+    wish_list INT NOT NULL,
+    CONSTRAINT fk_wish_list_products_claimed_by_uuid FOREIGN KEY (claimed_by) REFERENCES users(uuid) ON DELETE SET NULL ON UPDATE RESTRICT,
+    CONSTRAINT fk_wish_list_products_wish_list_id FOREIGN KEY (wish_list) REFERENCES wish_lists(id) ON DELETE CASCADE ON UPDATE RESTRICT
 );
 
 CREATE TABLE users_wish_lists (
-    user_id UUID REFERENCES users (uuid) ON DELETE CASCADE ON UPDATE CASCADE,
-    wish_list_id INT REFERENCES wish_lists (id) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT pk_users_wish_lists PRIMARY KEY (user_id, wish_list_id)
+    user_id UUID,
+    wish_list_id INT,
+    CONSTRAINT pk_users_wish_lists PRIMARY KEY (user_id, wish_list_id),
+    CONSTRAINT fk_users_wish_lists_wish_list_id_id FOREIGN KEY (wish_list_id) REFERENCES wish_lists(id) ON DELETE CASCADE ON UPDATE RESTRICT,
+    CONSTRAINT fk_users_wish_lists_user_id_uuid FOREIGN KEY (user_id) REFERENCES users(uuid) ON DELETE CASCADE ON UPDATE RESTRICT
 );

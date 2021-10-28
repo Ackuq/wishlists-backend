@@ -1,49 +1,23 @@
 package io.github.ackuq.routes
 
-import io.github.ackuq.TestDatabaseFactory
-import io.github.ackuq.conf.JwtConfig
 import io.github.ackuq.dto.TokenDTO
-import io.github.ackuq.dto.UserCredentialsDTO
 import io.github.ackuq.dto.UserDTO
 import io.github.ackuq.services.UserService
 import io.github.ackuq.utils.ApiError
 import io.github.ackuq.utils.ApiSuccess
-import io.github.ackuq.withTestServer
+import io.github.ackuq.utils.TestExtension
+import io.github.ackuq.utils.withTestServer
 import io.ktor.http.*
 import io.ktor.server.testing.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalSerializationApi::class)
-class UsersTest {
-
-    private val databaseFactory: TestDatabaseFactory = TestDatabaseFactory()
-
-    private val user = UserCredentialsDTO("testUser@test.com", "password")
-    private val otherUser = UserCredentialsDTO("otherTestUser@test.com", "password")
-
-    @BeforeTest
-    fun setup() {
-        databaseFactory.init()
-    }
-
-    @AfterTest
-    fun tearDown() {
-        databaseFactory.close()
-    }
-
-    private fun setUpUsers(): TokenDTO {
-        val token = JwtConfig.registerCustomer(user)
-        JwtConfig.registerCustomer(otherUser)
-        return token
-    }
-
+class UsersTest : TestExtension() {
     @Test
     fun register() = withTestServer {
         // Given
@@ -116,7 +90,7 @@ class UsersTest {
         with(handleRequest(HttpMethod.Get, "api/v1/users/me") {
             addHeader(HttpHeaders.Accept, ContentType.Application.Json.toString())
             addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-            addHeader(HttpHeaders.Authorization, "Bearer ${token.accessToken}")
+            addHeader(HttpHeaders.Authorization, "Bearer ${token.user.accessToken}")
         }) {
             val data = Json.decodeFromString<ApiSuccess<UserDTO>>(
                 response.content!!
@@ -141,7 +115,7 @@ class UsersTest {
         with(handleRequest(HttpMethod.Get, "api/v1/users/${userUUID}") {
             addHeader(HttpHeaders.Accept, ContentType.Application.Json.toString())
             addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-            addHeader(HttpHeaders.Authorization, "Bearer ${token.accessToken}")
+            addHeader(HttpHeaders.Authorization, "Bearer ${token.user.accessToken}")
         }) {
             val data = Json.decodeFromString<ApiSuccess<UserDTO>>(
                 response.content!!
@@ -158,7 +132,7 @@ class UsersTest {
         with(handleRequest(HttpMethod.Get, "api/v1/users/${otherUUID}") {
             addHeader(HttpHeaders.Accept, ContentType.Application.Json.toString())
             addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-            addHeader(HttpHeaders.Authorization, "Bearer ${token.accessToken}")
+            addHeader(HttpHeaders.Authorization, "Bearer ${token.user.accessToken}")
         }) {
             assertEquals(HttpStatusCode.Forbidden, response.status())
         }
