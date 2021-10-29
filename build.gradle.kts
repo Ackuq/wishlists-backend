@@ -56,6 +56,7 @@ dependencies {
     implementation("io.bkbn:kompendium-core:$kompendiumVersion")
     implementation("io.bkbn:kompendium-auth:$kompendiumVersion")
     // Test dependencies
+    testImplementation("org.reflections:reflections:0.10.2")
     testImplementation("com.h2database:h2:$h2Version")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
