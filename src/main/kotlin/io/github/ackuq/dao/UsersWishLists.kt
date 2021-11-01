@@ -8,4 +8,3 @@ object UsersWishLists : Table("users_wish_lists") {
     var wishList = reference("wish_list_id", WishLists, ReferenceOption.CASCADE)
     override val primaryKey = PrimaryKey(user, wishList, name = "pk_users_wish_lists")
 }
-

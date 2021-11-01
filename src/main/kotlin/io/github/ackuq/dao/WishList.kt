@@ -31,6 +31,7 @@ class WishList(id: EntityID<Int>) : IntEntity(id) {
             title = this@WishList.title,
             description = this@WishList.description,
             users = this@WishList.users.map { it.email },
-            products = this@WishList.products.map { it.toDTO() })
+            products = this@WishList.products.map { it.toDTO() }
+        )
     }
 }

@@ -4,7 +4,7 @@ import io.github.ackuq.conf.AuthorizationException
 import io.github.ackuq.dao.User
 import io.github.ackuq.dao.WishListProduct
 import io.github.ackuq.dto.EditWishListProductPayload
-import io.ktor.features.*
+import io.ktor.features.NotFoundException
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object WishListProductService {
@@ -50,5 +50,4 @@ object WishListProductService {
             throw AuthorizationException("Not authorized to do this")
         }
     }
-
 }

@@ -6,11 +6,17 @@ import io.github.ackuq.dto.UserCredentialsDTO
 import io.github.ackuq.utils.SimpleResponseInfo
 import io.github.ackuq.utils.handleApiSuccess
 import io.github.ackuq.utils.postInfo
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.http.*
-import io.ktor.request.*
-import io.ktor.routing.*
+import io.ktor.application.Application
+import io.ktor.application.application
+import io.ktor.application.call
+import io.ktor.application.log
+import io.ktor.features.BadRequestException
+import io.ktor.features.NotFoundException
+import io.ktor.http.HttpStatusCode
+import io.ktor.request.receive
+import io.ktor.routing.Route
+import io.ktor.routing.route
+import io.ktor.routing.routing
 
 fun Route.login() {
     route("/login") {
@@ -33,7 +39,6 @@ fun Route.login() {
         }
     }
 }
-
 
 fun Route.register() {
     route("/register") {

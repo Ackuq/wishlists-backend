@@ -1,8 +1,8 @@
 package io.github.ackuq.utils
 
-import io.ktor.application.*
-import io.ktor.http.*
-import io.ktor.response.*
+import io.ktor.application.ApplicationCall
+import io.ktor.http.HttpStatusCode
+import io.ktor.response.respond
 
 suspend fun handleApiException(exception: Throwable, status: HttpStatusCode, call: ApplicationCall) {
     exception.message?.let { message ->

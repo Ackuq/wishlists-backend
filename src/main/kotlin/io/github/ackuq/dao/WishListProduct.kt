@@ -17,7 +17,6 @@ object WishListProducts : IntIdTable("wish_list_products", "id") {
     val wishList = reference("wish_list", WishLists, ReferenceOption.CASCADE)
 }
 
-
 class WishListProduct(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<WishListProduct>(WishListProducts)
 

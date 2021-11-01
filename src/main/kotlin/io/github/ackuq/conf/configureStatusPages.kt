@@ -5,9 +5,13 @@ import io.bkbn.kompendium.models.meta.ResponseInfo
 import io.github.ackuq.utils.ApiError
 import io.github.ackuq.utils.handleApiError
 import io.github.ackuq.utils.handleApiException
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.http.*
+import io.ktor.application.Application
+import io.ktor.application.call
+import io.ktor.application.install
+import io.ktor.features.BadRequestException
+import io.ktor.features.NotFoundException
+import io.ktor.features.StatusPages
+import io.ktor.http.HttpStatusCode
 import kotlinx.serialization.SerializationException
 
 inline fun <reified T : Throwable> StatusPages.Configuration.exceptionHandle(

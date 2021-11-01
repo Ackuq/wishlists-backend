@@ -7,8 +7,12 @@ import io.github.ackuq.utils.ApiError
 import io.github.ackuq.utils.ApiSuccess
 import io.github.ackuq.utils.TestExtension
 import io.github.ackuq.utils.withTestServer
-import io.ktor.http.*
-import io.ktor.server.testing.*
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.testing.handleRequest
+import io.ktor.server.testing.setBody
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -24,11 +28,13 @@ class UsersTest : TestExtension() {
         val payload = Json.encodeToString(user)
 
         // When
-        with(handleRequest(HttpMethod.Post, "api/v1/auth/register") {
-            addHeader(HttpHeaders.Accept, ContentType.Application.Json.toString())
-            addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-            setBody(payload)
-        }) {
+        with(
+            handleRequest(HttpMethod.Post, "api/v1/auth/register") {
+                addHeader(HttpHeaders.Accept, ContentType.Application.Json.toString())
+                addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                setBody(payload)
+            }
+        ) {
             val data = Json.decodeFromString<ApiSuccess<TokenDTO>>(
                 response.content!!
             )
@@ -45,11 +51,13 @@ class UsersTest : TestExtension() {
         setUpUsers()
 
         // When
-        with(handleRequest(HttpMethod.Post, "api/v1/auth/register") {
-            addHeader(HttpHeaders.Accept, ContentType.Application.Json.toString())
-            addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-            setBody(payload)
-        }) {
+        with(
+            handleRequest(HttpMethod.Post, "api/v1/auth/register") {
+                addHeader(HttpHeaders.Accept, ContentType.Application.Json.toString())
+                addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                setBody(payload)
+            }
+        ) {
             val data = Json.decodeFromString<ApiError>(
                 response.content!!
             )
@@ -65,11 +73,13 @@ class UsersTest : TestExtension() {
         setUpUsers()
         val payload = Json.encodeToString(user)
         // When
-        with(handleRequest(HttpMethod.Post, "api/v1/auth/login") {
-            addHeader(HttpHeaders.Accept, ContentType.Application.Json.toString())
-            addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-            setBody(payload)
-        }) {
+        with(
+            handleRequest(HttpMethod.Post, "api/v1/auth/login") {
+                addHeader(HttpHeaders.Accept, ContentType.Application.Json.toString())
+                addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                setBody(payload)
+            }
+        ) {
             val data = Json.decodeFromString<ApiSuccess<TokenDTO>>(
                 response.content!!
             )
@@ -87,11 +97,13 @@ class UsersTest : TestExtension() {
         val userUUID = UserService.getUserByEmail(user.email)!!.id.value.toString()
 
         // When
-        with(handleRequest(HttpMethod.Get, "api/v1/users/me") {
-            addHeader(HttpHeaders.Accept, ContentType.Application.Json.toString())
-            addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-            addHeader(HttpHeaders.Authorization, "Bearer ${token.user.accessToken}")
-        }) {
+        with(
+            handleRequest(HttpMethod.Get, "api/v1/users/me") {
+                addHeader(HttpHeaders.Accept, ContentType.Application.Json.toString())
+                addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                addHeader(HttpHeaders.Authorization, "Bearer ${token.user.accessToken}")
+            }
+        ) {
             val data = Json.decodeFromString<ApiSuccess<UserDTO>>(
                 response.content!!
             )
@@ -112,11 +124,13 @@ class UsersTest : TestExtension() {
         // When
 
         // Should be able to get own profile
-        with(handleRequest(HttpMethod.Get, "api/v1/users/${userUUID}") {
-            addHeader(HttpHeaders.Accept, ContentType.Application.Json.toString())
-            addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-            addHeader(HttpHeaders.Authorization, "Bearer ${token.user.accessToken}")
-        }) {
+        with(
+            handleRequest(HttpMethod.Get, "api/v1/users/$userUUID") {
+                addHeader(HttpHeaders.Accept, ContentType.Application.Json.toString())
+                addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                addHeader(HttpHeaders.Authorization, "Bearer ${token.user.accessToken}")
+            }
+        ) {
             val data = Json.decodeFromString<ApiSuccess<UserDTO>>(
                 response.content!!
             )
@@ -129,11 +143,13 @@ class UsersTest : TestExtension() {
 
         val otherUUID = UserService.getUserByEmail(otherUser.email)!!.id.value.toString()
         // Should not be able to get other peoples profiles
-        with(handleRequest(HttpMethod.Get, "api/v1/users/${otherUUID}") {
-            addHeader(HttpHeaders.Accept, ContentType.Application.Json.toString())
-            addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-            addHeader(HttpHeaders.Authorization, "Bearer ${token.user.accessToken}")
-        }) {
+        with(
+            handleRequest(HttpMethod.Get, "api/v1/users/$otherUUID") {
+                addHeader(HttpHeaders.Accept, ContentType.Application.Json.toString())
+                addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                addHeader(HttpHeaders.Authorization, "Bearer ${token.user.accessToken}")
+            }
+        ) {
             assertEquals(HttpStatusCode.Forbidden, response.status())
         }
     }

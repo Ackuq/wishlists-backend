@@ -22,7 +22,6 @@ data class UserCredentialsDTO(val email: String, val password: String)
 @Serializable
 data class UpdateUserDTO(val email: String? = null)
 
-
 @Serializable
 enum class Role {
     Admin,

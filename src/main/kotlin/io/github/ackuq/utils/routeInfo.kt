@@ -3,15 +3,13 @@ package io.github.ackuq.utils
 import io.bkbn.kompendium.models.meta.MethodInfo
 import io.bkbn.kompendium.models.meta.RequestInfo
 import io.bkbn.kompendium.models.meta.ResponseInfo
-import io.ktor.http.*
+import io.ktor.http.HttpStatusCode
 import kotlin.reflect.KClass
-
 
 data class SimpleResponseInfo<TResponse>(
     val status: HttpStatusCode,
     val example: TResponse
 )
-
 
 inline fun <reified TRequest, reified TResponse : Any> postInfo(
     summary: String,

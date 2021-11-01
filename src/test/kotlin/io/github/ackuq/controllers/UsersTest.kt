@@ -11,7 +11,6 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-
 class UsersTest {
 
     private val databaseFactory: TestDatabaseFactory = TestDatabaseFactory()
@@ -36,11 +35,9 @@ class UsersTest {
             val user = UserService.getUserByEmail(userCredentials.email)!!
             val users = UserService.getAllUsers()
 
-
             assertEquals(1, users.size)
             assertEquals(user.id.value, users.first().id.value)
             assertEquals(Role.Customer, user.role)
             assertEquals(userCredentials.email, user.email)
         }
-
 }

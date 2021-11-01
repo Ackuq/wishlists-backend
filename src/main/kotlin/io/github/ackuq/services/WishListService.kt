@@ -9,11 +9,12 @@ import io.github.ackuq.dto.CreateWishListPayload
 import io.github.ackuq.dto.CreateWishListProductPayload
 import io.github.ackuq.dto.EditWishListPayload
 import io.github.ackuq.dto.Role
-import io.ktor.features.*
+import io.ktor.features.BadRequestException
+import io.ktor.features.NotFoundException
 import org.jetbrains.exposed.dao.with
 import org.jetbrains.exposed.sql.SizedCollection
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.*
+import java.util.UUID
 
 object WishListService {
     fun createWishList(newOwner: User, createPayload: CreateWishListPayload): WishList = transaction {

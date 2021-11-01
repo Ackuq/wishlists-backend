@@ -5,8 +5,12 @@ import io.github.ackuq.dto.WishListDTO
 import io.github.ackuq.utils.ApiSuccess
 import io.github.ackuq.utils.TestExtension
 import io.github.ackuq.utils.withTestServer
-import io.ktor.http.*
-import io.ktor.server.testing.*
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.testing.handleRequest
+import io.ktor.server.testing.setBody
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -28,12 +32,14 @@ class WishListTest : TestExtension() {
             payload
         )
         // When
-        with(handleRequest(HttpMethod.Post, "/api/v1/wish-list") {
-            addHeader(HttpHeaders.Accept, ContentType.Application.Json.toString())
-            addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-            addHeader(HttpHeaders.Authorization, "Bearer ${tokens.user.accessToken}")
-            setBody(payloadString)
-        }) {
+        with(
+            handleRequest(HttpMethod.Post, "/api/v1/wish-list") {
+                addHeader(HttpHeaders.Accept, ContentType.Application.Json.toString())
+                addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                addHeader(HttpHeaders.Authorization, "Bearer ${tokens.user.accessToken}")
+                setBody(payloadString)
+            }
+        ) {
             val data = Json.decodeFromString<ApiSuccess<WishListDTO>>(
                 response.content!!
             )
