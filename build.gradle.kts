@@ -7,6 +7,8 @@ val exposedVersion = "0.36.1"
 val flywayVersion = "8.0.2"
 val h2Version = "1.4.200"
 val kompendiumVersion = "1.9.1"
+val jbcryptVersion = "0.4"
+val reflectionsVersion = "0.10.2"
 
 plugins {
     application
@@ -14,6 +16,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "1.5.31"
     id("org.flywaydb.flyway") version "8.0.2"
     id("com.jetbrains.exposed.gradle.plugin") version "0.2.1"
+    id("org.jlleitschuh.gradle.ktlint") version "10.2.0"
 }
 
 group = "io.github.ackuq"
@@ -39,7 +42,7 @@ dependencies {
     implementation("io.ktor:ktor-auth:$ktorVersion")
     implementation("io.ktor:ktor-auth-jwt:$ktorVersion")
     // BCrypt
-    implementation("org.mindrot:jbcrypt:0.4")
+    implementation("org.mindrot:jbcrypt:$jbcryptVersion")
     // Logging
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     // Postgres connector
@@ -56,7 +59,7 @@ dependencies {
     implementation("io.bkbn:kompendium-core:$kompendiumVersion")
     implementation("io.bkbn:kompendium-auth:$kompendiumVersion")
     // Test dependencies
-    testImplementation("org.reflections:reflections:0.10.2")
+    testImplementation("org.reflections:reflections:$reflectionsVersion")
     testImplementation("com.h2database:h2:$h2Version")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")

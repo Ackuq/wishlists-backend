@@ -3,7 +3,7 @@ package io.github.ackuq.conf
 import com.typesafe.config.ConfigFactory
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import io.ktor.config.*
+import io.ktor.config.HoconApplicationConfig
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
 import org.slf4j.LoggerFactory
@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory
 interface IDatabaseFactory {
     fun init()
 }
-
 
 object DatabaseFactory : IDatabaseFactory {
     private val logger = LoggerFactory.getLogger(this.javaClass)
@@ -25,7 +24,6 @@ object DatabaseFactory : IDatabaseFactory {
         val flyway = Flyway.configure().dataSource(dbURL, dbUser, dbPassword).load()
         flyway.migrate()
     }
-
 
     private fun hikari(): HikariDataSource {
         val config = HikariConfig()

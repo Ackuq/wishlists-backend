@@ -3,9 +3,11 @@ package io.github.ackuq.conf
 import io.bkbn.kompendium.auth.KompendiumAuth.notarizedJwt
 import io.github.ackuq.dto.Role
 import io.github.ackuq.services.UserService
-import io.ktor.application.*
-import io.ktor.auth.*
-import java.util.*
+import io.ktor.application.Application
+import io.ktor.application.install
+import io.ktor.auth.Authentication
+import io.ktor.auth.Principal
+import java.util.UUID
 
 fun handleAuthentication(uuid: String, roles: List<Role>?): Principal? {
     if (uuid == "") {
@@ -41,4 +43,3 @@ fun Application.configureJWT() {
         }
     }
 }
-

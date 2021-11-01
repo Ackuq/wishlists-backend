@@ -8,10 +8,11 @@ import io.github.ackuq.dao.User
 import io.github.ackuq.dto.TokenDTO
 import io.github.ackuq.dto.UserCredentialsDTO
 import io.github.ackuq.services.UserService
-import io.ktor.config.*
-import io.ktor.features.*
+import io.ktor.config.HoconApplicationConfig
+import io.ktor.features.BadRequestException
+import io.ktor.features.NotFoundException
 import org.mindrot.jbcrypt.BCrypt
-import java.util.*
+import java.util.Date
 
 object JwtConfig {
     private val appConfig = HoconApplicationConfig(ConfigFactory.load())
@@ -54,5 +55,4 @@ object JwtConfig {
             }
         }
     }
-
 }

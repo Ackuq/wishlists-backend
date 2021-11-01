@@ -9,12 +9,20 @@ import io.github.ackuq.dto.EditWishListProductPayload
 import io.github.ackuq.services.WishListProductService
 import io.github.ackuq.services.WishListService
 import io.github.ackuq.utils.handleApiSuccess
-import io.ktor.application.*
-import io.ktor.auth.*
-import io.ktor.features.*
-import io.ktor.http.*
-import io.ktor.request.*
-import io.ktor.routing.*
+import io.ktor.application.Application
+import io.ktor.application.call
+import io.ktor.auth.authenticate
+import io.ktor.auth.principal
+import io.ktor.features.BadRequestException
+import io.ktor.http.HttpStatusCode
+import io.ktor.request.receive
+import io.ktor.routing.Route
+import io.ktor.routing.delete
+import io.ktor.routing.get
+import io.ktor.routing.post
+import io.ktor.routing.put
+import io.ktor.routing.route
+import io.ktor.routing.routing
 
 fun Route.wishLists() {
     authenticate {

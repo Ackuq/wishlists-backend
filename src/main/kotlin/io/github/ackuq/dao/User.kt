@@ -2,14 +2,14 @@ package io.github.ackuq.dao
 
 import io.github.ackuq.dto.Role
 import io.github.ackuq.dto.UserDTO
-import io.ktor.auth.*
+import io.ktor.auth.Principal
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.UUIDEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.*
+import java.util.UUID
 
 object Users : UUIDTable(name = "users", columnName = "uuid") {
     val email: Column<String> = varchar("email", 255)
@@ -42,4 +42,3 @@ class User(uuid: EntityID<UUID>) : UUIDEntity(uuid), Principal {
         )
     }
 }
-
