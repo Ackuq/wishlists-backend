@@ -29,7 +29,7 @@ fun Route.login() {
                     HttpStatusCode.Created,
                     "JWT_TOKEN"
                 ),
-                setOf(BadRequestException::class, NotFoundException::class)
+                setOf(NotFoundException::class)
             )
         ) {
             val userCredentials = call.receive<UserCredentialsDTO>()
