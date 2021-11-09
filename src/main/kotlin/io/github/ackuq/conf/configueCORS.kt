@@ -18,7 +18,6 @@ fun Application.configureCORS() {
         header(HttpHeaders.AccessControlAllowHeaders)
         header(HttpHeaders.ContentType)
         header(HttpHeaders.AccessControlAllowOrigin)
-        allowCredentials = true
         anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
     }
 }
