@@ -1,5 +1,5 @@
 val ktorVersion = "1.6.5"
-val kotlinVersion = "1.5.31"
+val kotlinVersion = "1.6.0"
 val logbackVersion = "1.2.7"
 val postgresqlVersion = "42.3.1"
 val hikariCPVersion = "5.0.0"
