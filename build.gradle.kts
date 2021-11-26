@@ -14,7 +14,7 @@ plugins {
     application
     kotlin("jvm") version "1.6.0"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.6.0"
-    id("org.flywaydb.flyway") version "8.0.5"
+    id("org.flywaydb.flyway") version "8.1.0"
     id("com.jetbrains.exposed.gradle.plugin") version "0.2.1"
     id("org.jlleitschuh.gradle.ktlint") version "10.2.0"
 }
