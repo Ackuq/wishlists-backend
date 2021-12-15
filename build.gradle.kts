@@ -12,7 +12,7 @@ val reflectionsVersion = "0.10.2"
 
 plugins {
     application
-    kotlin("jvm") version "1.6.0"
+    kotlin("jvm") version "1.6.10"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.6.0"
     id("org.flywaydb.flyway") version "8.2.1"
     id("com.jetbrains.exposed.gradle.plugin") version "0.2.1"
