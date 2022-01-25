@@ -1,10 +1,10 @@
 package io.github.ackuq
 
-import io.bkbn.kompendium.Kompendium
-import io.bkbn.kompendium.models.oas.OpenApiSpecInfo
-import io.bkbn.kompendium.models.oas.OpenApiSpecInfoLicense
-import io.bkbn.kompendium.routes.openApi
-import io.bkbn.kompendium.routes.redoc
+import io.bkbn.kompendium.core.Kompendium
+import io.bkbn.kompendium.core.routes.redoc
+import io.bkbn.kompendium.oas.OpenApiSpec
+import io.bkbn.kompendium.oas.info.Info
+import io.bkbn.kompendium.oas.info.License
 import io.github.ackuq.conf.DatabaseFactory
 import io.github.ackuq.conf.IDatabaseFactory
 import io.github.ackuq.conf.configureCORS
@@ -30,6 +30,10 @@ fun Application.module(databaseFactory: IDatabaseFactory = DatabaseFactory) {
     }
     install(DefaultHeaders)
     install(AutoHeadResponse)
+    install(Kompendium) {
+        spec = oas
+    }
+
     configureCORS()
     configureJWT()
     configureStatusPages()
@@ -43,19 +47,18 @@ fun Application.module(databaseFactory: IDatabaseFactory = DatabaseFactory) {
     }
 
     routing {
-        openApi(oas)
-        redoc(oas)
+        redoc(pageTitle = "Whishlist API")
         authenticationRoutes()
         usersRoutes()
         wishListRoutes()
     }
 }
 
-val oas = Kompendium.openApiSpec.copy(
-    info = OpenApiSpecInfo(
+val oas = OpenApiSpec(
+    info = Info(
         title = "Wishlist API",
         version = "0.1.0",
-        license = OpenApiSpecInfoLicense(
+        license = License(
             name = "MIT",
         )
     ),

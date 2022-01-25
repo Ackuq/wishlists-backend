@@ -1,8 +1,5 @@
 package io.github.ackuq.conf
 
-import io.bkbn.kompendium.Notarized.notarizedException
-import io.bkbn.kompendium.models.meta.ResponseInfo
-import io.github.ackuq.utils.ApiError
 import io.github.ackuq.utils.handleApiError
 import io.github.ackuq.utils.handleApiException
 import io.ktor.application.Application
@@ -18,13 +15,7 @@ inline fun <reified T : Throwable> StatusPages.Configuration.exceptionHandle(
     status: HttpStatusCode,
     doThrow: Boolean = false
 ) =
-    notarizedException<T, ApiError>(
-        info = ResponseInfo(
-            status,
-            status.description,
-            examples = mapOf("example" to ApiError(status.value, status.description))
-        )
-    ) {
+    exception<T> {
         handleApiException(it, status, call)
         if (doThrow) {
             throw it

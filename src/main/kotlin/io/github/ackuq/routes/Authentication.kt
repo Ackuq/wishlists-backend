@@ -1,17 +1,16 @@
 package io.github.ackuq.routes
 
-import io.bkbn.kompendium.Notarized.notarizedPost
+import io.bkbn.kompendium.core.Notarized.notarizedPost
 import io.github.ackuq.conf.JwtConfig
 import io.github.ackuq.dto.UserCredentialsDTO
 import io.github.ackuq.utils.SimpleResponseInfo
+import io.github.ackuq.utils.exceptionInfo
 import io.github.ackuq.utils.handleApiSuccess
 import io.github.ackuq.utils.postInfo
 import io.ktor.application.Application
 import io.ktor.application.application
 import io.ktor.application.call
 import io.ktor.application.log
-import io.ktor.features.BadRequestException
-import io.ktor.features.NotFoundException
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
 import io.ktor.routing.Route
@@ -29,7 +28,7 @@ fun Route.login() {
                     HttpStatusCode.Created,
                     "JWT_TOKEN"
                 ),
-                setOf(NotFoundException::class)
+                setOf(exceptionInfo(HttpStatusCode.BadRequest, "User not found"))
             )
         ) {
             val userCredentials = call.receive<UserCredentialsDTO>()
@@ -51,7 +50,7 @@ fun Route.register() {
                     HttpStatusCode.Created,
                     "JWT_TOKEN"
                 ),
-                setOf(BadRequestException::class)
+                setOf(exceptionInfo(HttpStatusCode.BadRequest, "Invalid payload"))
             )
         ) {
             val userCredentials = call.receive<UserCredentialsDTO>()

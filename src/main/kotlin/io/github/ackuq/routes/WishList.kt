@@ -1,6 +1,8 @@
 package io.github.ackuq.routes
 
+import io.bkbn.kompendium.auth.Notarized.notarizedAuthenticate
 import io.github.ackuq.conf.AuthorizationException
+import io.github.ackuq.conf.SecurityConfigurations
 import io.github.ackuq.dao.User
 import io.github.ackuq.dto.CreateWishListPayload
 import io.github.ackuq.dto.CreateWishListProductPayload
@@ -11,7 +13,6 @@ import io.github.ackuq.services.WishListService
 import io.github.ackuq.utils.handleApiSuccess
 import io.ktor.application.Application
 import io.ktor.application.call
-import io.ktor.auth.authenticate
 import io.ktor.auth.principal
 import io.ktor.features.BadRequestException
 import io.ktor.http.HttpStatusCode
@@ -25,7 +26,7 @@ import io.ktor.routing.route
 import io.ktor.routing.routing
 
 fun Route.wishLists() {
-    authenticate {
+    notarizedAuthenticate(SecurityConfigurations.default) {
         route("") {
             get {
                 val user = call.principal<User>() ?: throw AuthorizationException("Invalid credentials")
@@ -43,7 +44,7 @@ fun Route.wishLists() {
 }
 
 fun Route.wishListProduct() {
-    authenticate {
+    notarizedAuthenticate(SecurityConfigurations.default) {
         route("/product/{productId}") {
             get {
                 val user = call.principal<User>() ?: throw AuthorizationException("Invalid credentials")
@@ -73,7 +74,7 @@ fun Route.wishListProduct() {
 }
 
 fun Route.wishList() {
-    authenticate {
+    notarizedAuthenticate(SecurityConfigurations.default) {
         route("/{id}") {
             get {
                 val user = call.principal<User>() ?: throw AuthorizationException("Invalid credentials")
