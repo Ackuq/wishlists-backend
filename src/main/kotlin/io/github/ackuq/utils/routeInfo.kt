@@ -1,10 +1,12 @@
 package io.github.ackuq.utils
 
-import io.bkbn.kompendium.models.meta.MethodInfo
-import io.bkbn.kompendium.models.meta.RequestInfo
-import io.bkbn.kompendium.models.meta.ResponseInfo
+import io.bkbn.kompendium.core.metadata.ExceptionInfo
+import io.bkbn.kompendium.core.metadata.RequestInfo
+import io.bkbn.kompendium.core.metadata.ResponseInfo
+import io.bkbn.kompendium.core.metadata.method.GetInfo
+import io.bkbn.kompendium.core.metadata.method.PostInfo
 import io.ktor.http.HttpStatusCode
-import kotlin.reflect.KClass
+import kotlin.reflect.typeOf
 
 data class SimpleResponseInfo<TResponse>(
     val status: HttpStatusCode,
@@ -16,8 +18,8 @@ inline fun <reified TRequest, reified TResponse : Any> postInfo(
     description: String,
     requestExample: TRequest,
     responseInfo: SimpleResponseInfo<TResponse>,
-    throws: Set<KClass<*>> = emptySet()
-) = MethodInfo.PostInfo<Unit, TRequest, ApiSuccess<TResponse>>(
+    throws: Set<ExceptionInfo<*>> = emptySet()
+) = PostInfo<Unit, TRequest, ApiSuccess<TResponse>>(
     summary = summary,
     description = description,
     requestInfo = RequestInfo(
@@ -40,8 +42,8 @@ inline fun <reified TParam, reified TResponse : Any> getInfo(
     summary: String,
     description: String,
     responseInfo: SimpleResponseInfo<TResponse>,
-    throws: Set<KClass<*>> = emptySet()
-) = MethodInfo.GetInfo<TParam, ApiSuccess<TResponse>>(
+    throws: Set<ExceptionInfo<*>> = emptySet()
+) = GetInfo<TParam, ApiSuccess<TResponse>>(
     summary = summary,
     description = description,
     responseInfo = ResponseInfo(
@@ -52,4 +54,17 @@ inline fun <reified TParam, reified TResponse : Any> getInfo(
         )
     ),
     canThrow = throws
+)
+
+/*
+    Exception helper
+ */
+
+fun exceptionInfo(
+    status: HttpStatusCode,
+    description: String
+) = ExceptionInfo<ApiError>(
+    responseType = typeOf<ApiError>(),
+    status = status,
+    description = description
 )

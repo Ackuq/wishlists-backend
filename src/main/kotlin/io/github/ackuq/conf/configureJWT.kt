@@ -1,12 +1,12 @@
 package io.github.ackuq.conf
 
-import io.bkbn.kompendium.auth.KompendiumAuth.notarizedJwt
 import io.github.ackuq.dto.Role
 import io.github.ackuq.services.UserService
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.auth.Authentication
 import io.ktor.auth.Principal
+import io.ktor.auth.jwt.jwt
 import java.util.UUID
 
 fun handleAuthentication(uuid: String, roles: List<Role>?): Principal? {
@@ -27,14 +27,14 @@ fun handleAuthentication(uuid: String, roles: List<Role>?): Principal? {
 
 fun Application.configureJWT() {
     install(Authentication) {
-        notarizedJwt {
+        jwt(SecurityConfigurations.Names.DEFAULT) {
             verifier(JwtConfig.verifier)
             validate {
                 val uuid = it.payload.getClaim("uuid").asString()
                 handleAuthentication(uuid, null)
             }
         }
-        notarizedJwt("admin") {
+        jwt(SecurityConfigurations.Names.ADMIN) {
             verifier(JwtConfig.verifier)
             validate {
                 val uuid = it.payload.getClaim("uuid").asString()

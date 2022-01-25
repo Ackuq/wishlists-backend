@@ -9,7 +9,7 @@ import io.github.ackuq.dto.TokenDTO
 import io.github.ackuq.dto.UserCredentialsDTO
 import io.github.ackuq.services.UserService
 import io.ktor.config.HoconApplicationConfig
-import io.ktor.features.NotFoundException
+import io.ktor.features.BadRequestException
 import org.mindrot.jbcrypt.BCrypt
 import java.util.Date
 
@@ -45,10 +45,10 @@ object JwtConfig {
         val user = UserService.getUserByEmail(userCredentials.email)
         when {
             user === null -> {
-                throw NotFoundException(loginFailMessage)
+                throw BadRequestException(loginFailMessage)
             }
             !BCrypt.checkpw(userCredentials.password, user.passwordHash) -> {
-                throw NotFoundException(loginFailMessage)
+                throw BadRequestException(loginFailMessage)
             }
             else -> {
                 return generateToken(user)

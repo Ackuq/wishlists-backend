@@ -1,6 +1,6 @@
 name: Build and run tests
 
-on: [push]
+on: [ push ]
 
 jobs:
   build-test:

@@ -1,20 +1,22 @@
 package io.github.ackuq.routes
 
-import io.bkbn.kompendium.Notarized.notarizedGet
-import io.bkbn.kompendium.annotations.KompendiumParam
+import io.bkbn.kompendium.annotations.Param
 import io.bkbn.kompendium.annotations.ParamType
+import io.bkbn.kompendium.auth.Notarized.notarizedAuthenticate
+import io.bkbn.kompendium.core.Notarized.notarizedGet
 import io.github.ackuq.conf.AuthorizationException
+import io.github.ackuq.conf.SecurityConfigurations
 import io.github.ackuq.dao.User
 import io.github.ackuq.dto.Role
 import io.github.ackuq.dto.UpdateUserDTO
 import io.github.ackuq.dto.UserDTO
 import io.github.ackuq.services.UserService
 import io.github.ackuq.utils.SimpleResponseInfo
+import io.github.ackuq.utils.exceptionInfo
 import io.github.ackuq.utils.getInfo
 import io.github.ackuq.utils.handleApiSuccess
 import io.ktor.application.Application
 import io.ktor.application.call
-import io.ktor.auth.authenticate
 import io.ktor.auth.principal
 import io.ktor.features.BadRequestException
 import io.ktor.features.NotFoundException
@@ -27,7 +29,7 @@ import io.ktor.routing.routing
 import java.util.UUID
 
 fun Route.users() {
-    authenticate("admin") {
+    notarizedAuthenticate(SecurityConfigurations.admin) {
         route("") {
             notarizedGet(
                 getInfo<Unit, List<UserDTO>>(
@@ -47,7 +49,7 @@ fun Route.users() {
                             )
                         ),
                     ),
-                    throws = setOf(AuthorizationException::class)
+                    throws = setOf(exceptionInfo(HttpStatusCode.Unauthorized, "Not authorized to see page"))
                 )
             ) {
                 val users = UserService.getAllUsers()
@@ -58,11 +60,12 @@ fun Route.users() {
 }
 
 data class UserParams(
-    @KompendiumParam(ParamType.PATH, "UUID of the user, as a string") val uuid: String
+    @Param(type = ParamType.PATH)
+    val uuid: String
 )
 
 fun Route.user() {
-    authenticate {
+    notarizedAuthenticate(SecurityConfigurations.default) {
         route("/{uuid}") {
             notarizedGet(
                 getInfo<UserParams, UserDTO>(
@@ -80,7 +83,11 @@ fun Route.user() {
                             emptyList()
                         ),
                     ),
-                    throws = setOf(AuthorizationException::class, BadRequestException::class, NotFoundException::class)
+                    throws = setOf(
+                        exceptionInfo(HttpStatusCode.BadRequest, "Bad request"),
+                        exceptionInfo(HttpStatusCode.Unauthorized, "Not authorized to see page"),
+                        exceptionInfo(HttpStatusCode.NotFound, "User not found")
+                    )
                 )
             ) {
                 val user = call.principal<User>() ?: throw AuthorizationException("Invalid credentials")
@@ -98,7 +105,7 @@ fun Route.user() {
 }
 
 fun Route.me() {
-    authenticate {
+    notarizedAuthenticate(SecurityConfigurations.default) {
         route("/me") {
             notarizedGet(
                 getInfo<Unit, UserDTO>(
@@ -116,7 +123,7 @@ fun Route.me() {
                             emptyList()
                         ),
                     ),
-                    throws = setOf(AuthorizationException::class)
+                    throws = setOf(exceptionInfo(HttpStatusCode.Unauthorized, "Not authorized to proceed"))
                 )
             ) {
                 val user = call.principal<User>() ?: throw AuthorizationException("Invalid credentials")
