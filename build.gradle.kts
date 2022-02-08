@@ -6,7 +6,7 @@ val hikariCPVersion = "5.0.1"
 val exposedVersion = "0.37.3"
 val flywayVersion = "8.4.4"
 val h2Version = "2.1.210"
-val kompendiumVersion = "2.0.2"
+val kompendiumVersion = "2.0.3"
 val jbcryptVersion = "0.4"
 val reflectionsVersion = "0.10.2"
 
